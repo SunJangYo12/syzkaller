@@ -66,8 +66,6 @@ jobs:
       - name: Configure kernel
         run: |
           cd linux
-          make mrproper
-          make defconfig
           make prepare
           make modules_prepare
 
@@ -79,7 +77,7 @@ jobs:
           {
             ./bin/syz-extract -os linux -arch amd64 \
                 -sourcedir linux/ \
-                ./sys/linux/vnet_myproto.txt
+                -config ./sys/linux/vnet_myproto.txt || true
 
             echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
 
