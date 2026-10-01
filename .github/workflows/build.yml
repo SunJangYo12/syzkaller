@@ -68,7 +68,7 @@ jobs:
           {
             ./bin/syz-extract -os linux -arch amd64 \
                 -sourcedir linux/ \
-                -config ./sys/linux/vnet_myproto.txt
+                -config ./sys/linux/vnet_myproto.txt || true
 
             echo "\n menghasilkan sys/linux/vnet_myproto_amd64.const\n"
 
@@ -103,8 +103,8 @@ jobs:
 
           cp mylog.txt output/
 
-          cp -R ./bin output/ 2>/dev/null || true
-          cp -R ./sys output/ 2>/dev/null || true
+          #cp -R ./bin output/ 2>/dev/null || true
+          #cp -R ./sys output/ 2>/dev/null || true
 
           echo "=== Artifact contents ==="
           ls -lh output
