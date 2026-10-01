@@ -50,7 +50,7 @@ jobs:
 
           {
             make -j$(nproc)
-            make extract
+            make bin/syz-extract
 
           } 2>&1 | tee -a mylog.txt
 
