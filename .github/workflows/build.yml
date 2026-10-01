@@ -70,15 +70,16 @@ jobs:
           make defconfig
           make prepare
           make modules_prepare
-          make -j$(nproc)
 
       - name: Generate file const
         run: |
           set -o pipefail
+          export GOROOT="$GITHUB_WORKSPACE/go"
+          export PATH="$GOROOT/bin:$PATH"
           {
             ./bin/syz-extract -os linux -arch amd64 \
                 -sourcedir linux/ \
-                -config ./sys/linux/vnet_myproto.txt
+                ./sys/linux/vnet_myproto.txt
 
             echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
 
@@ -87,6 +88,8 @@ jobs:
       - name: Generate
         run: |
           set -o pipefail
+          export GOROOT="$GITHUB_WORKSPACE/go"
+          export PATH="$GOROOT/bin:$PATH"
           {
             make generate || true
 
@@ -96,6 +99,8 @@ jobs:
       - name: Rebuild syzkaller
         run: |
           set -o pipefail
+          export GOROOT="$GITHUB_WORKSPACE/go"
+          export PATH="$GOROOT/bin:$PATH"
           {
             make -j$(nproc) || true
 
