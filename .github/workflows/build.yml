@@ -66,11 +66,9 @@ jobs:
         run: |
           set -o pipefail
           {
-            ./bin/syz-extract -os linux -arch amd64 \
-                -sourcedir linux/ \
-                ./sys/linux/vnet_myproto.txt || true
+            make extract TARGETOS=linux TARGETARCH=amd64 SOURCEDIR=linux
 
-            echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
+            echo "\n menghasilkan sys/linux/vnet_myproto_amd64.const\n"
 
           } 2>&1 | tee -a mylog.txt
 
@@ -78,7 +76,7 @@ jobs:
         run: |
           set -o pipefail
           {
-            ./bin/syz-sysgen || true
+            make generate || true
 
           } 2>&1 | tee -a mylog.txt
 
