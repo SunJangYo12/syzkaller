@@ -90,7 +90,8 @@ jobs:
           export GOROOT="$GITHUB_WORKSPACE/go"
           export PATH="$GOROOT/bin:$PATH"
           {
-            make generate || true
+            echo "jin generet"
+            ./bin/syz-sysgen || true
 
           } 2>&1 | tee -a mylog.txt
 
