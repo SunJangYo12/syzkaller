@@ -67,8 +67,7 @@ jobs:
         run: |
           cd linux
           make defconfig
-          make prepare
-          make modules_prepare
+          make headers_install
 
       - name: Generate file const
         run: |
@@ -78,7 +77,7 @@ jobs:
           {
             ./bin/syz-extract -os linux -arch amd64 \
                 -sourcedir linux/ \
-                -config ./sys/linux/vnet_myproto.txt || true
+                -config ./sys/linux/vnet_myproto.txt
 
             echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
 
