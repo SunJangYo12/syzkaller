@@ -66,7 +66,9 @@ jobs:
         run: |
           set -o pipefail
           {
-            make extract TARGETOS=linux TARGETARCH=amd64 SOURCEDIR=linux
+            ./bin/syz-extract -os linux -arch amd64 \
+                -sourcedir linux/ \
+                -config ./sys/linux/vnet_myproto.txt
 
             echo "\n menghasilkan sys/linux/vnet_myproto_amd64.const\n"
 
