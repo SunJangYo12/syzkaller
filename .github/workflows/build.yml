@@ -1,0 +1,76 @@
+name: syzkaller build
+
+on:
+  push:
+    branches: [jin-net]
+  pull_request:
+    branches: [jin-net]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            bc \
+            bison \
+            flex \
+            libssl-dev \
+            libelf-dev \
+            dwarves \
+            cpio \
+            kmod \
+            git \
+            rsync \
+            dpkg-dev \
+            wget \
+            xz-utils
+
+      - name: Configure go
+        run: |
+          set -o pipefail
+          {
+            wget https://dl.google.com/go/go1.26.0.linux-amd64.tar.gz
+            tar -xf go1.26.0.linux-amd64.tar.gz
+
+          } 2>&1 | tee -a mylog.txt
+
+      - name: Make
+        run: |
+          set -o pipefail
+
+          export GOROOT="$GITHUB_WORKSPACE/go"
+          export PATH="$GOROOT/bin:$PATH"
+
+          {
+            make make -j$(nproc)
+
+          } 2>&1 | tee -a mylog.txt
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p output
+
+          cp mylog.txt output/
+
+          cp -R ./bin output/ 2>/dev/null || true
+          cp -R ./sys output/ 2>/dev/null || true
+
+          echo "=== Artifact contents ==="
+          ls -lh output
+
+          tar czvf result.tar.gz \
+            -C output .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: result
+          path: result.tar.gz
+
