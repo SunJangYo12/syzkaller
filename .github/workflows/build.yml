@@ -50,6 +50,7 @@ jobs:
 
           {
             make -j$(nproc)
+            make extract
 
           } 2>&1 | tee -a mylog.txt
 
