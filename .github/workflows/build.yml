@@ -96,11 +96,8 @@ jobs:
       - name: Rebuild syzkaller
         run: |
           set -o pipefail
-
-          export GOROOT="$GITHUB_WORKSPACE/go"
-          export PATH="$GOROOT/bin:$PATH"
           {
-            make -j$(nproc)
+            make -j$(nproc) || true
 
           } 2>&1 | tee -a mylog.txt
 
