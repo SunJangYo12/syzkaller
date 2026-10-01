@@ -41,7 +41,7 @@ jobs:
 
           } 2>&1 | tee -a mylog.txt
 
-      - name: Make
+      - name: Make syzkaller
         run: |
           set -o pipefail
 
@@ -52,6 +52,48 @@ jobs:
             make -j$(nproc)
 
           } 2>&1 | tee -a mylog.txt
+
+      - name: Clone Linux 5.15
+        run: |
+          git clone \
+            --depth=1 \
+            --branch v5.15.190 \
+            https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git \
+            linux
+
+      - name: Generate file const
+        run: |
+          set -o pipefail
+          {
+            ./bin/syz-extract -os linux -arch amd64 \
+                -sourcedir linux/ \
+                sys/linux/vnet_myproto.txt
+            echo " → menghasilkan sys/linux/vnet_myproto_amd64.const"
+
+          } 2>&1 | tee -a mylog.txt
+
+      - name: Generate
+        run: |
+          set -o pipefail
+          {
+            ./bin/syz-sysgen
+
+          } 2>&1 | tee -a mylog.txt
+
+
+      - name: Rebuild syzkaller
+        run: |
+          set -o pipefail
+
+          export GOROOT="$GITHUB_WORKSPACE/go"
+          export PATH="$GOROOT/bin:$PATH"
+          {
+            make -j$(nproc)
+
+          } 2>&1 | tee -a mylog.txt
+
+
+
 
       - name: Collect artifacts
         run: |

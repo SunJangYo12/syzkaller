@@ -1,0 +1,10 @@
+# sys/linux/vnet_myproto.txt
+
+include <linux/types.h>
+
+# Tahap 1: sama persis dengan commit c5707f5e5 — random bytes dulu
+myproto_packet {
+    data    array[int8, 0:256]
+} [packed]
+
+syz_emit_ethernet$myproto(len len[packet], packet ptr[in, myproto_packet])
