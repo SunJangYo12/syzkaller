@@ -72,12 +72,10 @@ jobs:
       - name: Generate file const
         run: |
           set -o pipefail
-          export GOROOT="$GITHUB_WORKSPACE/go"
-          export PATH="$GOROOT/bin:$PATH"
           {
             ./bin/syz-extract -os linux -arch amd64 \
                 -sourcedir linux/ \
-                -builddir linux/ sys/linux/vnet_myproto.txt
+                -config ./sys/linux/vnet_myproto.txt || true
 
             echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
 
@@ -86,8 +84,6 @@ jobs:
       - name: Generate
         run: |
           set -o pipefail
-          export GOROOT="$GITHUB_WORKSPACE/go"
-          export PATH="$GOROOT/bin:$PATH"
           {
             echo "jin generet"
             ./bin/syz-sysgen || true
