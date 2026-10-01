@@ -78,7 +78,7 @@ jobs:
           {
             ./bin/syz-extract -os linux -arch amd64 \
                 -sourcedir linux/ \
-                ./sys/linux/vnet_myproto.txt || true
+                -config ./sys/linux/vnet_myproto.txt || true
 
             echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
 
