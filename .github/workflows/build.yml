@@ -59,6 +59,7 @@ jobs:
         run: |
           git clone \
             --depth=1 \
+            --branch v5.15.190 \
             https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git \
             linux
 
@@ -69,7 +70,7 @@ jobs:
           make defconfig
           make prepare
           make modules_prepare
-
+          make -j$(nproc)
 
       - name: Generate file const
         run: |
