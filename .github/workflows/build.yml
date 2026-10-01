@@ -66,6 +66,7 @@ jobs:
       - name: Configure kernel
         run: |
           cd linux
+           make defconfig
           make prepare
           make modules_prepare
 
