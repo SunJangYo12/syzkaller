@@ -53,9 +53,12 @@ jobs:
             make -j$(nproc)
             make bin/syz-extract
 
+            GOOS=linux GOARCH=arm64 CGO_ENABLED=0 \
+              go build -o oke ./syz-manager
+
           } 2>&1 | tee -a mylog.txt
 
-      - name: Clone Linux 5.15
+      - name: Clone Linux v7.2
         run: |
           git clone \
             --depth=1 \
