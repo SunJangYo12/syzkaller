@@ -64,7 +64,7 @@ jobs:
           cp mylog.txt output/
 
           cp -R ./bin output/ 2>/dev/null || true
-          #cp -R ./sys output/ 2>/dev/null || true
+          cp -R ./sys output/ 2>/dev/null || true
 
           echo "=== Artifact contents ==="
           ls -lh output
