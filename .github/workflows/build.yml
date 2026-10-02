@@ -59,7 +59,7 @@ jobs:
         run: |
           git clone \
             --depth=1 \
-            --branch v6.14 \
+            --branch v7.2 \
             https://github.com/torvalds/linux \
             linux
 
