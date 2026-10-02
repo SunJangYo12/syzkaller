@@ -58,56 +58,6 @@ jobs:
 
           } 2>&1 | tee -a mylog.txt
 
-      - name: Clone Linux v7.2
-        run: |
-          git clone \
-            --depth=1 \
-            --branch v7.2 \
-            https://github.com/torvalds/linux \
-            linux
-
-      - name: Configure kernel
-        run: |
-          cd linux
-          make defconfig
-          make prepare
-
-      - name: Generate file const
-        run: |
-          set -o pipefail
-          export GOROOT="$GITHUB_WORKSPACE/go"
-          export PATH="$GOROOT/bin:$PATH"
-          {
-            ./bin/syz-extract -os=linux \
-                -sourcedir=linux -arch=amd64 vnet_myproto.txt
-
-            echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
-
-          } 2>&1 | tee -a mylog.txt
-
-      - name: Generate
-        run: |
-          set -o pipefail
-          export GOROOT="$GITHUB_WORKSPACE/go"
-          export PATH="$GOROOT/bin:$PATH"
-          {
-            echo "jin generet"
-            ./bin/syz-sysgen
-
-          } 2>&1 | tee -a mylog.txt
-
-
-      - name: Rebuild syzkaller
-        run: |
-          set -o pipefail
-          export GOROOT="$GITHUB_WORKSPACE/go"
-          export PATH="$GOROOT/bin:$PATH"
-          {
-            make -j$(nproc)
-
-          } 2>&1 | tee -a mylog.txt
-
-
 
 
       - name: Collect artifacts
@@ -116,8 +66,10 @@ jobs:
 
           cp mylog.txt output/
 
-          cp -R ./bin output/ 2>/dev/null || true
-          cp -R ./sys output/ 2>/dev/null || true
+          cp oke output
+
+          #cp -R ./bin output/ 2>/dev/null || true
+          #cp -R ./sys output/ 2>/dev/null || true
 
           echo "=== Artifact contents ==="
           ls -lh output
