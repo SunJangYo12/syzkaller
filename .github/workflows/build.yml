@@ -51,7 +51,7 @@ jobs:
           {
             make install_prerequisites
 
-            HOSTOS=linux HOSTARCH=arm64 make manager
+            HOSTOS=linux HOSTARCH=arm64 make
 
           } 2>&1 | tee -a mylog.txt
 
