@@ -89,7 +89,7 @@ jobs:
           export PATH="$GOROOT/bin:$PATH"
           {
             echo "jin generet"
-            ./bin/syz-sysgen || true
+            ./bin/syz-sysgen
 
           } 2>&1 | tee -a mylog.txt
 
@@ -100,7 +100,7 @@ jobs:
           export GOROOT="$GITHUB_WORKSPACE/go"
           export PATH="$GOROOT/bin:$PATH"
           {
-            make -j$(nproc) || true
+            make -j$(nproc)
 
           } 2>&1 | tee -a mylog.txt
 
@@ -113,8 +113,8 @@ jobs:
 
           cp mylog.txt output/
 
-          #cp -R ./bin output/ 2>/dev/null || true
-          #cp -R ./sys output/ 2>/dev/null || true
+          cp -R ./bin output/ 2>/dev/null || true
+          cp -R ./sys output/ 2>/dev/null || true
 
           echo "=== Artifact contents ==="
           ls -lh output
