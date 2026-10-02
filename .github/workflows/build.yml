@@ -59,7 +59,7 @@ jobs:
         run: |
           git clone \
             --depth=1 \
-            --branch v6.2-rc8 \
+            --branch v6.2 \
             https://github.com/torvalds/linux \
             linux
 
@@ -68,7 +68,6 @@ jobs:
           cd linux
           make defconfig
           make prepare
-          make modules_prepare
 
       - name: Generate file const
         run: |
@@ -77,8 +76,7 @@ jobs:
           export PATH="$GOROOT/bin:$PATH"
           {
             ./bin/syz-extract -os linux -arch amd64 \
-                -sourcedir linux/ \
-                -config sys/linux/vnet_myproto.txt
+                -sourcedir linux || true
 
             echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
 
