@@ -51,7 +51,7 @@ jobs:
           {
             make install_prerequisites
 
-            HOSTOS=linux HOSTARCH=arm64 make bin/syz-manager || true
+            HOSTOS=linux HOSTARCH=arm64 make manager
 
           } 2>&1 | tee -a mylog.txt
 
