@@ -75,8 +75,8 @@ jobs:
           export GOROOT="$GITHUB_WORKSPACE/go"
           export PATH="$GOROOT/bin:$PATH"
           {
-            ./bin/syz-extract -os linux -arch amd64 \
-                -sourcedir linux || true
+            ./bin/syz-extract -os=linux \
+                -sourcedir=linux -arch=amd64 vnet_myproto.txt
 
             echo "menghasilkan sys/linux/vnet_myproto_amd64.const"
 
