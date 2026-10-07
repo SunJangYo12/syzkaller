@@ -51,8 +51,8 @@ jobs:
           {
             make install_prerequisites
 
+            HOSTOS=android HOSTARCH=arm64 TARGETOS=linux TARGETARCH=amd64 make -j$(nproc)
             make bin/syz-extract
-            make bin/syz-sysgen
 
           } 2>&1 | tee -a mylog.txt
 
@@ -101,6 +101,7 @@ jobs:
           export GOROOT="$GITHUB_WORKSPACE/go"
           export PATH="$GOROOT/bin:$PATH"
           {
+            make -j$(nproc)
             HOSTOS=android HOSTARCH=arm64 TARGETOS=linux TARGETARCH=amd64 make -j$(nproc)
 
           } 2>&1 | tee -a mylog.txt
