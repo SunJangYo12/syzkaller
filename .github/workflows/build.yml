@@ -52,6 +52,7 @@ jobs:
             make install_prerequisites
 
             make bin/syz-extract
+            make bin/syz-sysgen
 
           } 2>&1 | tee -a mylog.txt
 
