@@ -1,0 +1,33 @@
+{
+  "name": "external-net-ARP",
+  "target": "linux/amd64",
+  "http": "192.168.0.101:56741",
+  "workdir": "work",
+  "kernel_obj": "/sdcard/syzz/linux-6-oem",
+  "syzkaller": "/data/local/tmp/syzkaller-adb/syzkaller",
+  "sshkey": "key",
+  "procs": 1,
+  "type": "isolated",
+  "enable_syscalls": [
+	  "syz_emit_ethernet",
+	  "syz_extract_tcp_res",
+	  "syz_extract_tcp_res$synack",
+
+	  "socket$inet_tcp",
+	  "bind$inet",
+	  "listen",
+	  "accept$inet",
+
+	  "socket$inet6_tcp",
+	  "bind$inet6",
+	  "accept$inet6",
+
+	  "socket$inet_udp",
+	  "close"
+  ],
+  "vm": {
+    "host": "192.168.0.101",
+    "targets": ["192.168.0.102:22"],
+    "target_dir": "/tmp/zz"
+  }
+}

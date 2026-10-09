@@ -1,0 +1,23 @@
+{
+  "name": "wifi isolated",
+  "target": "linux/amd64",
+  "http": "192.168.0.100:56741",
+  "workdir": "work",
+  "kernel_obj": "/sdcard/syzz/linux-6-oem",
+  "syzkaller": "/data/local/tmp/syzkaller-adb/syzkaller",
+  "sshkey": "key",
+  "procs": 1,
+  "type": "isolated",
+  "suppressions": ["WARNING in kcov_remote_start"],
+  "enable_syscalls": [
+    "syz_80211_inject_frame",
+    "syz_genetlink_get_family_id$nl80211",
+    "socket$nl_generic",
+    "sendmsg$NL80211_*"
+  ],
+  "vm": {
+    "host": "192.168.0.100",
+    "targets": ["192.168.0.102:22"],
+    "target_dir": "/tmp/zz"
+  }
+}

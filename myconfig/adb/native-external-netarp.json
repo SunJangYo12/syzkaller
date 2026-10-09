@@ -1,0 +1,19 @@
+{
+  "name": "external-net-ARP",
+  "target": "linux/amd64",
+  "http": "192.168.0.100:56741",
+  "workdir": "work",
+  "kernel_obj": "/sdcard/syzz/linux-6-oem",
+  "syzkaller": "/data/local/tmp/syzkaller-adb/syzkaller",
+  "sshkey": "key",
+  "procs": 1,
+  "type": "isolated",
+  "enable_syscalls": [
+    "syz_emit_ethernet$arp"
+  ],
+  "vm": {
+    "host": "192.168.0.100",
+    "targets": ["192.168.0.102:22"],
+    "target_dir": "/tmp/zz"
+  }
+}

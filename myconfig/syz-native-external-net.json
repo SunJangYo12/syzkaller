@@ -1,0 +1,23 @@
+{
+  "name": "external-net-test",
+  "target": "linux/amd64",
+  "http": "192.168.0.102:56741",
+  "workdir": "/dev/shm/syz/workdir",
+  "kernel_obj": "/home/jin/Desktop/bak/",
+  "syzkaller": "syzkaller",
+  "sshkey": "/root/sshkey/jin",
+  "procs": 1,
+  "type": "isolated",
+  "enable_syscalls": [
+    "syz_emit_ethernet",
+    "syz_extract_tcp_res",
+    "syz_extract_tcp_res$synack"
+  ],
+  "vm": {
+    "host": "localhost",
+    "targets": ["localhost:22"],
+    "pstore": false,
+    "target_dir": "/tmp/zz",
+    "target_reboot": false
+  }
+}
