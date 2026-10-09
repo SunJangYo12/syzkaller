@@ -1,0 +1,31 @@
+1. ./get-cov.sh
+2. ./resolve.sh
+CEK di output/symbols.txt
+
+3. kandidat
+./get-percov.sh
+./resolve-percov.sh
+./get-kandidat.sh tcp_v6_rcv
+
+
+4. vim dengan data coverage
+
+:cfile cov.txt
+:copen
+
+lalu
+:cnext
+:cprev
+
+NOTE: jika tidak terload saat tekan ENTER atau ditandai || saat :copen
+:set errorformat=%f:%l lalu restart vim
+
+
+TIPS VIM:
+undo = visual mode, u
+redo = visual mode, ctrl+r
+
+:undolist
+
+wrap/nowrap = :set wrap/nowrap
+
