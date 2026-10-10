@@ -1,14 +1,14 @@
-1. ./get-cov.sh
-2. ./resolve.sh
+# 1. ./get-cov.sh
+# 2. ./resolve.sh
 CEK di output/symbols.txt
 
-3. kandidat
+# 3. kandidat
 ./get-percov.sh
 ./resolve-percov.sh
 ./get-kandidat.sh tcp_v6_rcv
 
 
-4. vim dengan data coverage
+# 4. vim dengan data coverage
 
 :cfile cov.txt
 :copen
@@ -29,3 +29,11 @@ redo = visual mode, ctrl+r
 
 wrap/nowrap = :set wrap/nowrap
 
+
+
+# 5. unpack
+syz-db unpack corpus.db corpus-out
+syz-prog2c -os linux -arch amd64 -prog corpus-out/10f39146fc42f1d69c954d2467b84302c47e99ef -enable tun -sandbox none > 10f39146fc42f1d69c954d2467b84302c47e99ef.c
+
+mkdir cov
+sudo syz-execprog -executor=/dev/shm/syz-executor -os=linux -arch=amd64 -sandbox=none -enable=tun -cover -coverfile=cov/prog -procs=1 -repeat=1 -output corpus-out/10f39146fc42f1d69c954d2467b84302c47e99ef 
