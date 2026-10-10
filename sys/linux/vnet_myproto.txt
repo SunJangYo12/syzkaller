@@ -9,4 +9,19 @@ myproto_packet {
 } [packed]
 
 syz_emit_ethernet$myproto(len len[packet], packet ptr[in, myproto_packet])
-syz_emit_ethernet$arp(len len[packet], packet ptr[in, eth2_packet_t[ETH_P_ARP, arp_packet]], frags ptr[in, vnet_fragmentation, opt])
+
+
+arp_dst_mac [
+	local		mac_addr_t[const[0xaa, int8]]
+	broadcast	array[const[0xff, int8], 6]
+]
+
+arp_eth_packet {
+	dst_mac	arp_dst_mac
+	src_mac	mac_addr
+	etype	const[ETH_P_ARP, int16be]
+	payload	arp_packet
+} [packed]
+
+syz_emit_ethernet$arp(len len[packet], packet ptr[in, arp_eth_packet], frags ptr[in, vnet_fragmentation, opt])
+
