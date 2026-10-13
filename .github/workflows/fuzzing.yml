@@ -51,6 +51,7 @@ jobs:
             echo "zzzzzzzzzz"
             ls
             pwd
+            chmod 0600 ssh/mykey
             timeout -s INT -k 2m 10s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json -debug
