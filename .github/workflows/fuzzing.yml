@@ -44,6 +44,7 @@ jobs:
         run: |
           set -o pipefail
           {
+            cd myfuzzing/syz
             chmod 0600 ssh/mykey
             timeout -s INT -k 2m 30s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
