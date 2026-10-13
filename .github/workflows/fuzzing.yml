@@ -35,6 +35,8 @@ jobs:
           set -o pipefail
           {
             cd myfuzzing
+            pwd
+            ls
             bash ./run.sh 2>&1 || true
             pkill -9 afl-fuzz || true
 
