@@ -6,7 +6,7 @@
   "kernel_obj": "linux-4.19",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
-  "procs": 1,
+  "procs": 4,
   "type": "qemu",
   "image": "dummy.img",
   "enable_syscalls": [
@@ -27,11 +27,11 @@
 	  "close"
   ],
   "vm": {
-    "count": 1,
+    "count": 4,
     "kernel": "bzImage",
     "initrd": "initramfs-new.cpio.gz",
     "cmdline": "console=ttyS0 root=/dev/ram0",
-    "cpu": 1,
-    "mem": 1048
+    "cpu": 2,
+    "mem": 2048
   }
 }

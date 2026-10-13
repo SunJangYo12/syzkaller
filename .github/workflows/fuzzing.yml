@@ -46,7 +46,7 @@ jobs:
           {
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
-            timeout -s INT -k 2m 50s \
+            timeout -s INT -k 2m 2m \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
 
