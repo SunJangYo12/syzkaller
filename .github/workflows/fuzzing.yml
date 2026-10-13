@@ -21,7 +21,7 @@ jobs:
             qemu-kvm \
             gettext libelf-dev \
             qemu-system-x86 busybox-static cpio \
-            git
+            git ssh openssh-client
 
       - name: Enable KVM
         run: |
@@ -44,15 +44,8 @@ jobs:
         run: |
           set -o pipefail
           {
-            ls
-            pwd
-            ls bin
-            cd myfuzzing/syz
-            echo "zzzzzzzzzz"
-            ls
-            pwd
             chmod 0600 ssh/mykey
-            timeout -s INT -k 2m 10s \
+            timeout -s INT -k 2m 30s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json -debug
 
