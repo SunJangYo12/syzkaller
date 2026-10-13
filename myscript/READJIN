@@ -37,3 +37,6 @@ syz-prog2c -os linux -arch amd64 -prog corpus-out/10f39146fc42f1d69c954d2467b843
 
 mkdir cov
 sudo syz-execprog -executor=/dev/shm/syz-executor -os=linux -arch=amd64 -sandbox=none -enable=tun -cover -coverfile=cov/prog -procs=1 -repeat=1 -output corpus-out/10f39146fc42f1d69c954d2467b84302c47e99ef 
+
+# 6. test program
+./get-corpus-cov.sh 15353d7da2a7b82b2927e181ea1fc798b932c16a
