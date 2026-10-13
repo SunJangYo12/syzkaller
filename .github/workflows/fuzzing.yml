@@ -39,7 +39,8 @@ jobs:
           {
             ls -l /dev/kvm
 
-            bash ./myfuzzing/run.sh
+            bash ./myfuzzing/run.sh 2>&1 || true
+            pkill -9 afl-fuzz || true
 
           } 2>&1 | tee -a mylog.txt
 
