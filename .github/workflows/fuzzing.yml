@@ -34,9 +34,6 @@ jobs:
         run: |
           set -o pipefail
           {
-            git clone https://github.com/amluto/virtme.git
-
-
             bash ./myfuzzing/run.sh 2>&1 || true
             pkill -9 afl-fuzz || true
 
