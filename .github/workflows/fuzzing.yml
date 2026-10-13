@@ -49,8 +49,7 @@ jobs:
             timeout -s INT -k 2m 30s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
-            ls
-            pwd
+
             cp -R workdir ~
 
           } 2>&1 | tee -a ~/mylog.txt
@@ -61,7 +60,7 @@ jobs:
           mkdir -p output
 
           cp ~/mylog.txt output/
-          cp ~/workdir output/
+          cp -R ~/workdir output/
 
           tar czvf result.tar.gz \
             -C output .
