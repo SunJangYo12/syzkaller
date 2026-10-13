@@ -51,6 +51,9 @@ jobs:
             echo "zzzzzzzzzz"
             ls
             pwd
+            timeout -s INT -k 2m 10s \
+                /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
+                -config=syz-qemu.json -debug
 
           } 2>&1 | tee -a ~/mylog.txt
 
