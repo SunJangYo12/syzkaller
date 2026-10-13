@@ -4,7 +4,7 @@
   "http": ":56741",
   "workdir": "workdir",
   "kernel_obj": "linux-4.19",
-  "syzkaller": "../../",
+  "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "procs": 1,
   "type": "qemu",
