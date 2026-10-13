@@ -19,7 +19,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             build-essential \
             qemu-kvm \
-            python2 gettext libelf-dev \
+            gettext libelf-dev \
             qemu-system-x86 busybox-static cpio \
             git
 
