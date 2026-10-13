@@ -46,7 +46,11 @@ jobs:
           {
             ls
             pwd
+            ls bin
             cd myfuzzing/syz
+            echo "zzzzzzzzzz"
+            ls
+            pwd
 
           } 2>&1 | tee -a ~/mylog.txt
 
