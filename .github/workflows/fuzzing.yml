@@ -46,9 +46,10 @@ jobs:
           {
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
-            timeout -s INT -k 2m 2m \
+            timeout -s INT -k 2m 5h \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
+            cp -R workdir ~
 
           } 2>&1 | tee -a ~/mylog.txt
 
@@ -58,6 +59,7 @@ jobs:
           mkdir -p output
 
           cp ~/mylog.txt output/
+          cp ~/workdir output/
 
           tar czvf result.tar.gz \
             -C output .
