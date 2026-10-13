@@ -34,17 +34,18 @@ jobs:
         run: |
           set -o pipefail
           {
-            bash ./myfuzzing/run.sh 2>&1 || true
+            cd myfuzzing
+            bash ./run.sh 2>&1 || true
             pkill -9 afl-fuzz || true
 
-          } 2>&1 | tee -a mylog.txt
+          } 2>&1 | tee -a ~/mylog.txt
 
 
       - name: Collect artifacts
         run: |
           mkdir -p output
 
-          cp mylog.txt output/
+          cp ~/mylog.txt output/
 
           tar czvf result.tar.gz \
             -C output .
