@@ -30,12 +30,23 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
 
-      - name: zzzzzzzzzzz
+      - name: Download release binary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v1.0.0 \
+            -R sunjangyo12/syzkaller \
+            -p "host-amd64_target_amd64.tar.gz"
+
+          tar -xf host-amd64_target_amd64.tar.gz
+
+      - name: Run Fuzzer
         run: |
           set -o pipefail
           {
-            cd myfuzzing
-            bash ./run.sh || true
+            ls
+            pwd
+            cd myfuzzing/syz
 
           } 2>&1 | tee -a ~/mylog.txt
 
