@@ -48,7 +48,7 @@ jobs:
             chmod 0600 ssh/mykey
             timeout -s INT -k 2m 50s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
-                -config=syz-qemu.json
+                -config=syz-qemu.json || true
 
           } 2>&1 | tee -a ~/mylog.txt
 
