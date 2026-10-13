@@ -35,8 +35,7 @@ jobs:
           set -o pipefail
           {
             cd myfuzzing
-            bash ./run.sh 2>&1 || true
-            pkill -9 afl-fuzz || true
+            bash ./run.sh || true
 
           } 2>&1 | tee -a ~/mylog.txt
 
