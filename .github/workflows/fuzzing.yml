@@ -36,8 +36,6 @@ jobs:
           {
             git clone https://github.com/amluto/virtme.git
 
-            pwd
-            ls
 
             bash ./myfuzzing/run.sh 2>&1 || true
             pkill -9 afl-fuzz || true
