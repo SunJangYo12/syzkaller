@@ -53,12 +53,10 @@ jobs:
             (
               while true; do
                 #sleep 900
-                sleep 1
+                sleep 30
 
                 ts=$(date +%H%M%S)
                 mkdir -p "$FUZZDATA/percov-$ts"
-
-                echo "ZZZZZZzzzzzzzzz: $ts"
 
                 curl -s http://127.0.0.1:56741/rawcover > "$FUZZDATA/rawcover-$ts.txt" || true
 
@@ -66,16 +64,13 @@ jobs:
 
                 while read sig; do
                   curl -s "http://$HOST/rawcover?input=$sig" > "$FUZZDATA/percov-$ts/$sig.pcs" || true
-                  COV=`cat $FUZZDATA/$sig.pcs | wc -l`
-
-                  echo "[+] COV=$COV $sig"
                 done < "$FUZZDATA/sigs.txt"
 
               done
             ) &
             COLLECTOR=$!
 
-            timeout -s INT -k 2m 30s \
+            timeout -s INT -k 2m 2m \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
 
