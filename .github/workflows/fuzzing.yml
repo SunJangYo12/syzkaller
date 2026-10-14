@@ -21,7 +21,7 @@ jobs:
             qemu-kvm \
             gettext libelf-dev \
             qemu-system-x86 busybox-static cpio \
-            git ssh openssh-client
+            git ssh openssh-client curl
 
       - name: Enable KVM
         run: |
@@ -46,9 +46,38 @@ jobs:
           {
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
-            timeout -s INT -k 2m 5h \
+
+            FUZZDATA="workdir/fuzzdata"
+
+            # collector: salin corpus dan ambil coverage tiap 15 menit
+            (
+              while true; do
+                #sleep 900
+                sleep 40
+
+                ts=$(date +%H%M)
+                mkdir -p "$FUZZDATA/percov-$ts"
+
+                curl -s http://127.0.0.1:56741/rawcover > "$FUZZDATA/rawcover-$ts.txt" || true
+
+                curl -s http://127.0.0.1:56741/corpus | grep -o 'input?sig=[0-9a-f]*' | cut -d= -f2 | sort -u > "$FUZZDATA/sigs.txt"
+
+                while read sig; do
+                  curl -s "http://$HOST/rawcover?input=$sig" > "$FUZZDATA/percov-$ts/$sig.pcs"
+                  COV=`cat $FUZZDATA/$sig.pcs | wc -l`
+
+                  echo "[+] COV=$COV $sig"
+                done < "$FUZZDATA/sigs.txt"
+
+              done
+            ) &
+            COLLECTOR=$!
+
+            timeout -s INT -k 2m 2m \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
+
+            kill $COLLECTOR 2>/dev/null || true
 
             cp -R workdir ~
 
