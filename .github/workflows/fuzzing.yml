@@ -53,9 +53,9 @@ jobs:
             (
               while true; do
                 #sleep 900
-                sleep 5
+                sleep 1
 
-                ts=$(date +%H%M)
+                ts=$(date +%H%M%S)
                 mkdir -p "$FUZZDATA/percov-$ts"
 
                 curl -s http://127.0.0.1:56741/rawcover > "$FUZZDATA/rawcover-$ts.txt" || true
@@ -73,7 +73,7 @@ jobs:
             ) &
             COLLECTOR=$!
 
-            timeout -s INT -k 2m 2m \
+            timeout -s INT -k 2m 4m \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
 
