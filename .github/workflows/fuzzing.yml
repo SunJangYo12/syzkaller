@@ -58,6 +58,8 @@ jobs:
                 ts=$(date +%H%M%S)
                 mkdir -p "$FUZZDATA/percov-$ts"
 
+                echo "ZZZZZZzzzzzzzzz: $ts"
+
                 curl -s http://127.0.0.1:56741/rawcover > "$FUZZDATA/rawcover-$ts.txt" || true
 
                 curl -s http://127.0.0.1:56741/corpus | grep -o 'input?sig=[0-9a-f]*' | cut -d= -f2 | sort -u > "$FUZZDATA/sigs.txt"
