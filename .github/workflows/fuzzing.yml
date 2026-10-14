@@ -53,7 +53,7 @@ jobs:
             (
               while true; do
                 #sleep 900
-                sleep 40
+                sleep 5
 
                 ts=$(date +%H%M)
                 mkdir -p "$FUZZDATA/percov-$ts"
