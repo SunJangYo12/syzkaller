@@ -62,10 +62,10 @@ jobs:
 
                 curl -s http://127.0.0.1:56741/rawcover > "$FUZZDATA/rawcover-$ts.txt" || true
 
-                curl -s http://127.0.0.1:56741/corpus | grep -o 'input?sig=[0-9a-f]*' | cut -d= -f2 | sort -u > "$FUZZDATA/sigs.txt"
+                curl -s http://127.0.0.1:56741/corpus | grep -o 'input?sig=[0-9a-f]*' | cut -d= -f2 | sort -u > "$FUZZDATA/sigs.txt" || true
 
                 while read sig; do
-                  curl -s "http://$HOST/rawcover?input=$sig" > "$FUZZDATA/percov-$ts/$sig.pcs"
+                  curl -s "http://$HOST/rawcover?input=$sig" > "$FUZZDATA/percov-$ts/$sig.pcs" || true
                   COV=`cat $FUZZDATA/$sig.pcs | wc -l`
 
                   echo "[+] COV=$COV $sig"
@@ -75,7 +75,7 @@ jobs:
             ) &
             COLLECTOR=$!
 
-            timeout -s INT -k 2m 4m \
+            timeout -s INT -k 2m 30s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
 
