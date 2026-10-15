@@ -48,6 +48,9 @@ jobs:
             -p "linux-oem-6-kcov.tar.gz"
 
           tar -xf linux-oem-6-kcov.tar.gz
+          echo "======================"
+          ls
+          echo "======================"
           mv release/* linux-6-source
 
 
