@@ -51,22 +51,22 @@ jobs:
           chmod +x cloudflared
           nohup ./cloudflared tunnel --no-autoupdate --url http://127.0.0.1:56741 > tunnel.log 2>&1 &
 
+          URL=""
           for i in $(seq 1 30); do
             URL=$(grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' tunnel.log | head -1)
             [ -n "$URL" ] && break
-
-            curl -s "https://api.telegram.org/bot$ZZ/sendMessage" \
-                        -d chat_id="$CHAT_ID" \
-                        -d text="Syzkaller UI: $URL" > /dev/null
-
             sleep 2
           done
-          echo "UI: ${URL:-GAGAL, cek tunnel.log}"
-          cat tunnel.log
+
+          if [ -n "$URL" ]; then
+            MSG="Syzkaller UI: $URL"
+          else
+            MSG="GAGAL Syzkaller publik url"
+          fi
 
           curl -s "https://api.telegram.org/bot$ZZ/sendMessage" \
-                      -d chat_id="$CHAT_ID" \
-                      -d text="GAGAL Syzkaller publik url" > /dev/null
+            -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
+
 
 
       - name: Run Fuzzer syzkaler
@@ -99,7 +99,7 @@ jobs:
             ) &
             COLLECTOR=$!
 
-            timeout -s INT -k 2m 30s \
+            timeout -s INT -k 2m 1m \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
 
