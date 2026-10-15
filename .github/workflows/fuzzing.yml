@@ -21,7 +21,7 @@ jobs:
             qemu-kvm \
             gettext libelf-dev \
             qemu-system-x86 busybox-static cpio \
-            git ssh openssh-client curl
+            git ssh openssh-client curl jq
 
       - name: Enable KVM
         run: |
@@ -98,7 +98,7 @@ jobs:
             ) &
             COLLECTOR=$!
 
-            timeout -s INT -k 2m 1m \
+            timeout -s INT -k 2m 30s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
 
