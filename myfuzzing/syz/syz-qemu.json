@@ -3,7 +3,7 @@
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
-  "kernel_obj": "/home/runner/work/syzkaller/syzkaller/linux-6-source",
+  "kernel_obj": "/home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "procs": 4,
