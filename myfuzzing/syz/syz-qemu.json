@@ -3,7 +3,7 @@
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
-  "kernel_obj": "linux-4.19",
+  "kernel_obj": "/home/runner/work/syzkaller/syzkaller/linux-6-source",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "procs": 4,
@@ -28,7 +28,7 @@
   ],
   "vm": {
     "count": 4,
-    "kernel": "bzImage",
+    "kernel": "/home/runner/work/syzkaller/syzkaller/linux-6-source/bzImage",
     "initrd": "initramfs-new.cpio.gz",
     "cmdline": "console=ttyS0 root=/dev/ram0",
     "cpu": 2,

@@ -29,8 +29,29 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Download Linux OEM 6.0 source
+        run: |
+          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0.orig.tar.gz
+          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0-1021.21.diff.gz
+          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0-1021.21.dsc
 
-      - name: Download release binary
+          dpkg-source -x linux-oem-6.0_6.0.0-1021.21.dsc
+          mv linux-oem-6.0-6.0.0 linux-6-source
+
+
+      - name: Download kernel-6 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "Linux 6.0.9 KCOV (run 224)" \
+            -R sunjangyo12/test-ci \
+            -p "linux-oem-6-kcov.tar.gz"
+
+          tar -xf linux-oem-6-kcov.tar.gz
+          mv release/* linux-6-source
+
+
+      - name: Download syzkaller release binary
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
