@@ -40,7 +40,35 @@ jobs:
 
           tar -xf host-amd64_target_amd64.tar.gz
 
-      - name: Run Fuzzer
+
+      - name: Buka tunnel ke web UI
+        env: |
+          ZZ="8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
+          CHAT_ID="7797309176"
+
+        run: |
+          curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+          chmod +x cloudflared
+          nohup ./cloudflared tunnel --no-autoupdate --url http://127.0.0.1:56741 > tunnel.log 2>&1 &
+
+          for i in $(seq 1 30); do
+            URL=$(grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' tunnel.log | head -1)
+            [ -n "$URL" ] && break
+
+            curl -s "https://api.telegram.org/bot$ZZ/sendMessage" \
+                        -d chat_id="$CHAT_ID" \
+                        -d text="Syzkaller UI: $URL" > /dev/null
+
+            sleep 2
+          done
+          echo "UI: ${URL:-GAGAL, cek tunnel.log}"
+
+          curl -s "https://api.telegram.org/bot$ZZ/sendMessage" \
+                      -d chat_id="$CHAT_ID" \
+                      -d text="GAGAL Syzkaller publik url" > /dev/null
+
+
+      - name: Run Fuzzer syzkaler
         run: |
           set -o pipefail
           {
