@@ -28,7 +28,7 @@
   ],
   "vm": {
     "count": 4,
-    "kernel": "/home/runner/work/syzkaller/syzkaller/linux-6-source/bzImage",
+    "kernel": "/home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0/bzImage",
     "initrd": "initramfs-new.cpio.gz",
     "cmdline": "console=ttyS0 root=/dev/ram0",
     "cpu": 2,
