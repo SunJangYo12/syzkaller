@@ -81,7 +81,8 @@ jobs:
             # collector: salin corpus dan ambil coverage tiap 15 menit
             (
               while true; do
-                sleep 900
+                #sleep 900
+                sleep 1
 
                 ts=$(date +%H%M%S)
                 mkdir -p "$FUZZDATA/percov-$ts"
