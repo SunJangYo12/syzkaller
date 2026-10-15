@@ -62,6 +62,7 @@ jobs:
             sleep 2
           done
           echo "UI: ${URL:-GAGAL, cek tunnel.log}"
+          cat tunnel.log
 
           curl -s "https://api.telegram.org/bot$ZZ/sendMessage" \
                       -d chat_id="$CHAT_ID" \
@@ -97,7 +98,7 @@ jobs:
             ) &
             COLLECTOR=$!
 
-            timeout -s INT -k 2m 5h \
+            timeout -s INT -k 2m 1m \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json || true
 
