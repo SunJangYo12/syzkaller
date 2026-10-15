@@ -1,7 +1,16 @@
 name: syzkaller fuzzing CI
 
+# STOP: gh workflow disable "syzkaller fuzzing CI"
+# gh run cancel 38494535088 --force
+# START:
+# gh workflow list --all        # lihat status: active / disabled_manually
+# gh workflow enable "Fuzzing fridamode-libjpeg"
+
+
+
 env:
-  FUZZ_SECONDS: "120" #18000 = 5jam
+  #FUZZ_SECONDS: "120"
+  FUZZ_SECONDS: "18000" #5jam
 
 on:
   workflow_dispatch:
