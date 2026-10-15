@@ -4,7 +4,7 @@ name: syzkaller fuzzing CI
 # gh run cancel 38494535088 --force
 # START:
 # gh workflow list --all        # lihat status: active / disabled_manually
-# gh workflow enable "Fuzzing fridamode-libjpeg"
+# gh workflow enable "syzkaller fuzzing CI"
 
 
 
