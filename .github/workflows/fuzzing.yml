@@ -97,7 +97,7 @@ jobs:
           set -o pipefail
           {
             chmod +x myfuzzing/bot.sh
-            nohup ./bot.sh "$ZZ" "$CHAT_id" 2>&1 &
+            nohup ./bot.sh "$ZZ" "$CHAT_id" & || true
 
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
@@ -124,7 +124,7 @@ jobs:
             #) &
             #COLLECTOR=$!
 
-            timeout -s INT -k 2m 5m \
+            timeout -s INT -k 2m 10s \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json -debug || true
 
