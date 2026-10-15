@@ -1,5 +1,5 @@
 {
-  "name": "ramdisk-test",
+  "name": "Kernel 6 - ramdisk",
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
