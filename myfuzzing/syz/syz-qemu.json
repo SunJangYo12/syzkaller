@@ -5,7 +5,7 @@
   "workdir": "workdir",
   "kernel_obj": "/home/runner/work/syzkaller/syzkaller/linux-6-source",
   "kernel_src": "/home/runner/work/syzkaller/syzkaller/linux-6-source",
-  "kernel_build_src": "/home/runner/work/test-ci/test-ci/linux-6-source",
+  "kernel_build_src": "/home/runner/work/syzkaller/syzkaller/linux-6-source",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "procs": 4,
