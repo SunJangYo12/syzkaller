@@ -41,7 +41,7 @@ jobs:
 
       - name: Download kernel-6 release
         run: |
-          wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run224/linux-oem-6-kcov.tar.gz
+          wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run225/linux-oem-6-kcov.tar.gz
 
           tar -xf linux-oem-6-kcov.tar.gz
           ls
@@ -124,7 +124,7 @@ jobs:
             #) &
             #COLLECTOR=$!
 
-            timeout -s INT -k 2m 10s \
+            timeout -s INT -k 2m 5m \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json -debug || true
 
