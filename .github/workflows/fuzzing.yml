@@ -125,7 +125,7 @@ jobs:
             #) &
             #COLLECTOR=$!
 
-            timeout -s INT -k 2m 5m \
+            timeout -s INT -k 2m 5.8h \
                 /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
                 -config=syz-qemu.json -debug || true
 
