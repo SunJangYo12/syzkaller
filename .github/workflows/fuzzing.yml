@@ -36,8 +36,9 @@ jobs:
           wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0-1021.21.dsc
 
           dpkg-source -x linux-oem-6.0_6.0.0-1021.21.dsc
-          mv linux-oem-6.0-6.0.0 linux-6-source
 
+          mkdir -p /home/runner/work/test-ci/test-ci
+          mv linux-oem-6.0-6.0.0 /home/runner/work/test-ci/test-ci
 
       - name: Download kernel-6 release
         run: |
@@ -46,7 +47,7 @@ jobs:
           tar -xf linux-oem-6-kcov.tar.gz
           ls
           echo "zzzzzzzzzzz"
-          mv release/* linux-6-source
+          mv release/* /home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0
 
 
       - name: Download syzkaller release binary
