@@ -6,17 +6,17 @@
   "kernel_obj": "/home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
-  "procs": 4,
+  "procs": 2,
   "type": "qemu",
   "image": "dummy.img",
   "enable_syscalls": [
     "syz_emit_ethernet$arp"
   ],
   "vm": {
-    "count": 4,
+    "count": 2,
     "kernel": "/home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0/bzImage",
     "initrd": "initramfs-new.cpio.gz",
-    "cmdline": "console=ttyS0 root=/dev/ram0",
+    "cmdline": "console=ttyS0 root=/dev/ram0 nokaslr",
     "cpu": 2,
     "mem": 2048
   }

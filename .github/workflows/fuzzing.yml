@@ -1,14 +1,34 @@
 name: syzkaller fuzzing CI
 
+env:
+  FUZZ_SECONDS: "120" #18000 = 5jam
+
 on:
+  workflow_dispatch:
   push:
     branches: [jin-fuzz-ci]
-  pull_request:
-    branches: [jin-fuzz-ci]
+    paths:
+      - ".github/workflows/fuzzing.yml"
+      - "myfuzzing/syz/syz-qemu.json"
+      - "myfuzzing/syz/initramfs-new.cpio.gz"
+  schedule:
+    - cron: "0 */6 * * *"   # opsional, jaring pengaman kalau rantai putus
+
+concurrency:
+  group: syz-fuzz-loop
+  cancel-in-progress: false # jangan batalkan jika masih run, misal saat commit>
+
+permissions:
+  contents: read
+  actions: write
+
+
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 350 # paksa berhenti sebelum 6 jam
 
     steps:
       - uses: actions/checkout@v4
@@ -89,10 +109,28 @@ jobs:
 
 
 
+      - name: Ambil state sesi sebelumnya
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=fuzz-state&per_page=5" \
+                 -q '[.artifacts[] | select(.expired==false)][0].id')
+          if [ -n "$ID" ] && [ "$ID" != "null" ]; then
+            gh api "repos/${{ github.repository }}/actions/artifacts/$ID/zip" > prev.zip
+            mkdir -p prev && unzip -q prev.zip -d prev
+            ls -R prev | head -20
+          else
+            echo "Tidak ada state lama, mulai dari nol"
+          fi
+
+
+
       - name: Run Fuzzer syzkaler
         env:
           ZZ: "8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
           CHAT_ID: "7797309176"
+          DURATION: ${{ inputs.seconds || '60' }}
 
         run: |
           set -o pipefail
@@ -102,30 +140,41 @@ jobs:
 
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
+            mkdir -p workdir
 
-            timeout -s INT -k 2m 1m \
-                /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
-                -config=syz-qemu.json -debug || true
+            # lanjutkan corpus dari sesi sebelumnya
+            if [ -d "$GITHUB_WORKSPACE/prev/workdir" ]; then
+              cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
+            fi
 
-            cp -R workdir ~
+            timeout -s INT -k 2m "${FUZZ_SECONDS}s" \
+              /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
+              -config=syz-qemu.json || true
 
           } 2>&1 | tee -a ~/mylog.txt
 
 
       - name: Collect artifacts
+        if: always()
         run: |
-          mkdir -p output
+          mkdir -p output/workdir
 
-          cp ~/mylog.txt output/
-          cp ~/bot.log output/
-          cp -R ~/workdir output/
+          cp ~/mylog.txt output/ || true
+          cp ~/bot.log output/ || true
+          cp -a myfuzzing/syz/workdir/. output/ || true
 
-          tar czvf result.tar.gz \
-            -C output .
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: result
-          path: result.tar.gz
+          name: fuzz-state
+          path: output
+          retention-days: 7
 
+      - name: Lanjutkan sesi berikutnya
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run "${{ github.workflow }}" --ref ${{ github.ref_name }}
