@@ -42,9 +42,9 @@ jobs:
 
 
       - name: Buka tunnel ke web UI
-        env: |
-          ZZ="8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
-          CHAT_ID="7797309176"
+        env:
+          ZZ: "8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
+          CHAT_ID: "7797309176"
 
         run: |
           curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
