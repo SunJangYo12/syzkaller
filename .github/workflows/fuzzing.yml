@@ -89,9 +89,16 @@ jobs:
 
 
       - name: Run Fuzzer syzkaler
+        env:
+          ZZ: "8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
+          CHAT_ID: "7797309176"
+
         run: |
           set -o pipefail
           {
+            chmod +x myfuzzing/bot.sh
+            nohup ./bot.sh "$ZZ" "$CHAT_id" 2>&1 &
+
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
 
