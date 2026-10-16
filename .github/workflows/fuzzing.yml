@@ -90,53 +90,6 @@ jobs:
           tar -xf host-amd64_target_amd64.tar.gz
 
 
-      - name: Buka tunnel ke web UI & listener nc
-        env:
-          ZZ: "8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
-          CHAT_ID: "7797309176"
-
-        run: |
-          curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-          chmod +x cloudflared
-          nohup ./cloudflared tunnel --no-autoupdate --url http://127.0.0.1:56741 > tunnel.log 2>&1 &
-
-          URL=""
-          for i in $(seq 1 30); do
-            URL=$(grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' tunnel.log | head -1)
-            [ -n "$URL" ] && break
-            sleep 2
-          done
-
-          if [ -n "$URL" ]; then
-            MSG="Syzkaller UI: $URL"
-          else
-            MSG="GAGAL Syzkaller publik url"
-          fi
-
-          curl -s "https://api.telegram.org/bot$ZZ/sendMessage" \
-            -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
-
-
-          # nc listener
-          nohup ./cloudflared tunnel --no-autoupdate --url tcp://127.0.0.1:20022 > tunnel-nc.log 2>&1 &
-
-          URL=""
-          for i in $(seq 1 30); do
-            URL=$(grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' tunnel-nc.log | head -1)
-            [ -n "$URL" ] && break
-            sleep 2
-          done
-
-          if [ -n "$URL" ]; then
-            MSG="Listener NC: $URL"
-          else
-            MSG="GAGAL nc publik url"
-          fi
-
-          curl -s "https://api.telegram.org/bot$ZZ/sendMessage" \
-            -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
-
-
 
 
       - name: Ambil state sesi sebelumnya
@@ -157,16 +110,10 @@ jobs:
 
 
       - name: Run Fuzzer syzkaler
-        env:
-          ZZ: "8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
-          CHAT_ID: "7797309176"
-          DURATION: ${{ inputs.seconds || '60' }}
 
         run: |
           set -o pipefail
           {
-            chmod +x myfuzzing/bot.sh
-            nohup myfuzzing/bot.sh "$ZZ" "$CHAT_ID" > ~/bot.log 2>&1 &
 
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
