@@ -211,7 +211,7 @@ jobs:
           retention-days: 7
 
       - name: Lanjutkan sesi berikutnya
-        if: ${{ !cancelled() }}
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
