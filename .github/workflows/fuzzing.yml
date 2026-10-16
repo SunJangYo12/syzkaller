@@ -92,7 +92,7 @@ jobs:
 
       - name: Buka tunnel ke web UI & listener nc
         env:
-          ZZ: "8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
+          ZZ: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: "7797309176"
 
         run: |
@@ -158,7 +158,7 @@ jobs:
 
       - name: Run Fuzzer syzkaler
         env:
-          ZZ: "8998193648:AAFmoLWOwsYwvcmGmDVr6m6iFjD1hJ49Chc" # simpan ini BAHAYA
+          ZZ: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: "7797309176"
           DURATION: ${{ inputs.seconds || '60' }}
 
