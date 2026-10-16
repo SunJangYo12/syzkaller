@@ -1,4 +1,4 @@
-name: syzkaller fuzzing remote network CI
+name: zz
 
 # STOP: gh workflow disable "syzkaller fuzzing CI"
 # gh run cancel 38494535088 --force
