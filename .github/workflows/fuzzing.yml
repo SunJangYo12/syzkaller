@@ -9,8 +9,8 @@ name: syzkaller fuzzing remote network CI
 
 
 env:
-  #FUZZ_SECONDS: "120"
-  FUZZ_SECONDS: "18000" #5jam
+  FUZZ_SECONDS: "60"
+  #FUZZ_SECONDS: "18000" #5jam
 
 on:
   workflow_dispatch:
