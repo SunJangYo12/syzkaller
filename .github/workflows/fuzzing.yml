@@ -7,11 +7,6 @@ name: syzkaller fuzzing remote network CI
 # gh workflow enable "syzkaller fuzzing CI"
 
 
-
-env:
-  FUZZ_SECONDS: "60"
-  #FUZZ_SECONDS: "18000" #5jam
-
 on:
   workflow_dispatch:
   push:
@@ -185,7 +180,7 @@ jobs:
               cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
             fi
 
-            timeout -s INT -k 2m "${FUZZ_SECONDS}s" \
+            timeout -s INT -k 2m 60s \
               /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
               -config=syz-qemu.json || true
 
@@ -211,8 +206,8 @@ jobs:
           retention-days: 7
 
       - name: Lanjutkan sesi berikutnya
-        if: always()
+        if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh workflow run "syzkaller fuzzing remote network CI" --ref ${{ github.ref_name }}
+          gh workflow run "${{ github.workflow }}" --ref ${{ github.ref_name }}
