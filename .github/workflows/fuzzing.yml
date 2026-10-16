@@ -1,4 +1,4 @@
-name: syzkaller fuzzing CI
+name: syzkaller fuzzing CI #nama ini jangan dirubah, ntah kenapa error saat loop
 
 # STOP: gh workflow disable "syzkaller fuzzing CI"
 # gh run cancel 38494535088 --force
@@ -180,7 +180,7 @@ jobs:
               cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
             fi
 
-            timeout -s INT -k 2m 60s \
+            timeout -s INT -k 2m 5.6h \
               /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
               -config=syz-qemu.json || true
 
