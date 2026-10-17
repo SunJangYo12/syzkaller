@@ -24,7 +24,7 @@
 	  "ioctl$syz_tun_SIOCGIFINDEX",
 
 	  "socket$nl_route",
-	  "sendmsg$nl_route",
+	  "sendmsg$nl_route_neigh",
 
 	  "openat$arp_sysctl",
 	  "write$arp_sysctl"
