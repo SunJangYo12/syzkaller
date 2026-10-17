@@ -1,12 +1,120 @@
 # sys/linux/vnet_myproto.txt
 include <linux/types.h>
 include <uapi/linux/if_ether.h>
+include <uapi/linux/if_arp.h>
 
 
-# Tahap 1: sama persis dengan commit c5707f5e5 — random bytes dulu
+# Tahap 1: sama persis dengan commit c5707f5e5 - random bytes dulu
 myproto_packet {
-    data    array[int8, 0:256]
+	data	array[int8, 0:256]
 } [packed]
 
 syz_emit_ethernet$myproto(len len[packet], packet ptr[in, myproto_packet])
-syz_emit_ethernet$arp(len len[packet], packet ptr[in, eth2_packet_t[ETH_P_ARP, arp_packet]], frags ptr[in, vnet_fragmentation, opt])
+
+
+################################ ARP ################################
+
+arp_dst_mac [
+	local		mac_addr_t[const[0xaa, int8]]
+	broadcast	array[const[0xff, int8], 6]
+]
+
+# 172.20.20.170 (LOCAL_IPV4), 172.20.20.187 (REMOTE_IPV4), 0.0.0.0, acak
+arp_known_ip [
+	local	const[0xac1414aa, int32be]
+	remote	const[0xac1414bb, int32be]
+	zero	const[0x0, int32be]
+	rand	int32be
+]
+
+arp_ip4_normal {
+	htype	const[ARPHRD_ETHER, int16be]
+	ptype	const[ETH_P_IP, int16be]
+	hlen	const[6, int8]
+	plen	const[4, int8]
+	op	flags[arp_ops, int16be]
+	sha	mac_addr
+	spa	arp_known_ip
+	tha	mac_addr
+	tpa	arp_known_ip
+} [packed]
+
+arp_ip4_grat_local {
+	htype	const[ARPHRD_ETHER, int16be]
+	ptype	const[ETH_P_IP, int16be]
+	hlen	const[6, int8]
+	plen	const[4, int8]
+	op	flags[arp_ops, int16be]
+	sha	mac_addr
+	spa	const[0xac1414aa, int32be]
+	tha	mac_addr
+	tpa	const[0xac1414aa, int32be]
+} [packed]
+
+arp_ip4_grat_remote {
+	htype	const[ARPHRD_ETHER, int16be]
+	ptype	const[ETH_P_IP, int16be]
+	hlen	const[6, int8]
+	plen	const[4, int8]
+	op	flags[arp_ops, int16be]
+	sha	mac_addr
+	spa	const[0xac1414bb, int32be]
+	tha	mac_addr
+	tpa	const[0xac1414bb, int32be]
+} [packed]
+
+arp_ip4_probe_local {
+	htype	const[ARPHRD_ETHER, int16be]
+	ptype	const[ETH_P_IP, int16be]
+	hlen	const[6, int8]
+	plen	const[4, int8]
+	op	flags[arp_ops, int16be]
+	sha	mac_addr
+	spa	const[0x0, int32be]
+	tha	mac_addr
+	tpa	const[0xac1414aa, int32be]
+} [packed]
+
+arp_ip4_payload [
+	normal		arp_ip4_normal
+	grat_local	arp_ip4_grat_local
+	grat_remote	arp_ip4_grat_remote
+	probe_local	arp_ip4_probe_local
+	generic		arp_packet
+] [varlen]
+
+arp_eth_packet {
+	dst_mac	arp_dst_mac
+	src_mac	mac_addr
+	etype	const[ETH_P_ARP, int16be]
+	payload	arp_ip4_payload
+} [packed]
+
+syz_emit_ethernet$arp(len len[packet], packet ptr[in, arp_eth_packet], frags ptr[in, vnet_fragmentation, opt])
+
+
+####################### Pendukung state (tahap 2) #######################
+
+# sendto ke subnet syz_tun supaya kernel mengirim ARP request
+syz_tun_ipv4 [
+	local	const[0xac1414aa, int32be]
+	remote	const[0xac1414bb, int32be]
+	other	int32be[0xac141400:0xac1414ff]
+]
+
+sockaddr_in_syz_tun {
+	family	const[AF_INET, int16]
+	port	sock_port
+	addr	syz_tun_ipv4
+} [size[16]]
+
+sendto$inet_syz_tun(fd sock_in, buf buffer[in], len len[buf], f flags[send_flags], addr ptr[in, sockaddr_in_syz_tun], addrlen len[addr])
+
+# sysctl ARP hanya untuk interface syz_tun
+resource fd_arp_sysctl[fd]
+
+openat$arp_sysctl(fd const[AT_FDCWD], file ptr[in, string[arp_sysctl_files]], flags const[O_WRONLY], mode const[0]) fd_arp_sysctl
+write$arp_sysctl(fd fd_arp_sysctl, buf ptr[in, string[arp_sysctl_vals]], count len[buf])
+
+arp_sysctl_files = "/proc/sys/net/ipv4/conf/syz_tun/arp_ignore", "/proc/sys/net/ipv4/conf/syz_tun/arp_filter", "/proc/sys/net/ipv4/conf/syz_tun/arp_accept", "/proc/sys/net/ipv4/conf/syz_tun/arp_notify", "/proc/sys/net/ipv4/conf/syz_tun/proxy_arp", "/proc/sys/net/ipv4/conf/syz_tun/proxy_arp_pvlan", "/proc/sys/net/ipv4/conf/syz_tun/drop_gratuitous_arp"
+arp_sysctl_vals = "0", "1", "2", "3", "8"
