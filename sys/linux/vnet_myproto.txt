@@ -114,7 +114,7 @@ sendto$inet_syz_tun(fd sock_in, buf buffer[in], len len[buf], f flags[send_flags
 resource fd_arp_sysctl[fd]
 
 openat$arp_sysctl(fd const[AT_FDCWD], file ptr[in, string[arp_sysctl_files]], flags const[O_WRONLY], mode const[0]) fd_arp_sysctl
-write$arp_sysctl(fd fd_arp_sysctl, buf ptr[in, string[arp_sysctl_vals]], count len[buf])
+write$arp_sysctl(fd fd_arp_sysctl, buf ptr[in, stringnoz[arp_sysctl_vals]], count len[buf])
 
-arp_sysctl_files = "/proc/sys/net/ipv4/conf/syz_tun/arp_ignore", "/proc/sys/net/ipv4/conf/syz_tun/arp_filter", "/proc/sys/net/ipv4/conf/syz_tun/arp_accept", "/proc/sys/net/ipv4/conf/syz_tun/arp_notify", "/proc/sys/net/ipv4/conf/syz_tun/proxy_arp", "/proc/sys/net/ipv4/conf/syz_tun/proxy_arp_pvlan", "/proc/sys/net/ipv4/conf/syz_tun/drop_gratuitous_arp"
-arp_sysctl_vals = "0", "1", "2", "3", "8"
+arp_sysctl_files = "/proc/sys/net/ipv4/conf/all/arp_ignore", "/proc/sys/net/ipv4/conf/all/arp_filter", "/proc/sys/net/ipv4/conf/all/arp_accept", "/proc/sys/net/ipv4/conf/all/arp_notify", "/proc/sys/net/ipv4/conf/all/proxy_arp", "/proc/sys/net/ipv4/conf/all/proxy_arp_pvlan", "/proc/sys/net/ipv4/conf/all/drop_gratuitous_arp", "/proc/sys/net/ipv4/conf/default/arp_ignore", "/proc/sys/net/ipv4/conf/default/arp_accept", "/proc/sys/net/ipv4/conf/default/proxy_arp"
+arp_sysctl_vals = "0\n", "1\n", "2\n", "3\n", "8\n"
