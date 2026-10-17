@@ -22,6 +22,7 @@
 	  "ioctl$sock_inet_SIOCSARP",
 	  "ioctl$sock_inet_SIOCDARP",
 	  "ioctl$syz_tun_SIOCGIFINDEX",
+	  "socket$inet6_udp",
 
 	  "socket$nl_route",
 	  "sendmsg$nl_route",
