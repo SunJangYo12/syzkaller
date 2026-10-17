@@ -69,7 +69,7 @@ jobs:
 
       - name: Download kernel-6 release
         run: |
-          wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run225/linux-oem-6-kcov.tar.gz
+          wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run249/linux-oem-6-kcov.tar.gz
 
           tar -xf linux-oem-6-kcov.tar.gz
           ls
