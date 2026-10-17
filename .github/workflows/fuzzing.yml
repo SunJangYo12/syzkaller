@@ -81,7 +81,7 @@ jobs:
 
       - name: Download syzkaller release binary
         run: |
-          wget https://github.com/SunJangYo12/syzkaller/releases/download/v.1.0.2/result.tar.gz
+          wget https://github.com/SunJangYo12/syzkaller/releases/download/v.1.0.3/result.tar.gz
 
           tar -xf result.tar.gz
 
