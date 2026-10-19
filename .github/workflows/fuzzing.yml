@@ -19,7 +19,7 @@ on:
     - cron: "0 */6 * * *"   # opsional, jaring pengaman kalau rantai putus
 
 concurrency:
-  group: syz-fuzz-loop
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false # jangan batalkan jika masih run, misal saat commit>
 
 permissions:
