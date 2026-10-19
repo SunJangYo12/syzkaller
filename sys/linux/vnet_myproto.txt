@@ -104,12 +104,6 @@ syz_emit_ethernet$arp(len len[packet], packet ptr[in, arp_eth_packet], frags ptr
 ####################### Pendukung state (tahap 2) #######################
 
 # sendto ke subnet syz_tun supaya kernel mengirim ARP request
-syz_tun_ipv4 [
-	local	const[0xac1414aa, int32be]
-	remote	const[0xac1414bb, int32be]
-	other	int32be[0xac141400:0xac1414ff]
-]
-
 sockaddr_in_syz_tun {
 	family	const[AF_INET, int16]
 	port	sock_port
