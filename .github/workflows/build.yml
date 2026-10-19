@@ -139,7 +139,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v.1.0.4"
+          TAG="v.1.0.5"
           gh release create "$TAG" \
             result.tar.gz \
             --target "${{ github.sha }}" \
