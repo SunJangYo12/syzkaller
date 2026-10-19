@@ -19,10 +19,18 @@ arp_dst_mac [
 	broadcast	array[const[0xff, int8], 6]
 ]
 
+
+arp_peer_ip [
+	a	const[0xac141401, int32be]
+	b	const[0xac141402, int32be]
+	c	const[0xac141403, int32be]
+	d	const[0xac141404, int32be]
+]
+
 # 172.20.20.170 (LOCAL_IPV4), 172.20.20.187 (REMOTE_IPV4), 0.0.0.0, acak
 arp_known_ip [
+	peer	arp_peer_ip
 	local	const[0xac1414aa, int32be]
-	remote	const[0xac1414bb, int32be]
 	zero	const[0x0, int32be]
 	rand	int32be
 ]
@@ -105,10 +113,12 @@ syz_tun_ipv4 [
 sockaddr_in_syz_tun {
 	family	const[AF_INET, int16]
 	port	sock_port
-	addr	syz_tun_ipv4
+	addr	arp_peer_ip
 } [size[16]]
 
 sendto$inet_syz_tun(fd sock_in, buf buffer[in], len len[buf], f flags[send_flags], addr ptr[in, sockaddr_in_syz_tun], addrlen len[addr])
+
+
 
 # sysctl ARP hanya untuk interface syz_tun
 resource fd_arp_sysctl[fd]
@@ -117,7 +127,7 @@ openat$arp_sysctl(fd const[AT_FDCWD], file ptr[in, string[arp_sysctl_files]], fl
 write$arp_sysctl(fd fd_arp_sysctl, buf ptr[in, stringnoz[arp_sysctl_vals]], count len[buf])
 
 arp_sysctl_files = "/proc/sys/net/ipv4/conf/all/arp_ignore", "/proc/sys/net/ipv4/conf/all/arp_filter", "/proc/sys/net/ipv4/conf/all/arp_accept", "/proc/sys/net/ipv4/conf/all/arp_notify", "/proc/sys/net/ipv4/conf/all/proxy_arp", "/proc/sys/net/ipv4/conf/all/proxy_arp_pvlan", "/proc/sys/net/ipv4/conf/all/drop_gratuitous_arp", "/proc/sys/net/ipv4/conf/default/arp_ignore", "/proc/sys/net/ipv4/conf/default/arp_accept", "/proc/sys/net/ipv4/conf/default/proxy_arp"
-arp_sysctl_vals = "0\n", "1\n", "2\n", "3\n", "8\n"
+arp_sysctl_vals = "0\x0a", "1\x0a", "2\x0a", "3\x0a", "8\x0a"
 
 ioctl$syz_tun_SIOCGIFINDEX(fd sock_udp, cmd const[SIOCGIFINDEX], arg ptr[out, ifreq_dev_t["syz_tun", ifindex]])
 
