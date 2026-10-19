@@ -180,13 +180,6 @@ jobs:
               /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
               -config=syz-qemu.json || true
 
-
-            CCOUNT="`ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir/crashes`"
-            MSG="[NETALL] Jumlah crash: $CCOUNT"
-
-            curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
-              -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
-
           } 2>&1 | tee -a ~/mylog.txt
 
 
