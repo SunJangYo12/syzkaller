@@ -11,23 +11,21 @@
   "type": "qemu",
   "image": "dummy.img",
   "enable_syscalls": [
-      "syz_emit_ethernet$arp",
+	  "syz_emit_ethernet",
+	  "syz_extract_tcp_res",
+	  "syz_extract_tcp_res$synack",
+
+	  "socket$inet_tcp",
+	  "bind$inet",
+	  "listen",
+	  "accept$inet",
+
+	  "socket$inet6_tcp",
+	  "bind$inet6",
+	  "accept$inet6",
 
 	  "socket$inet_udp",
-	  "bind$inet",
-	  "connect$inet",
-	  "sendto$inet_syz_tun",
-	  "close",
-
-	  "ioctl$sock_inet_SIOCSARP",
-	  "ioctl$sock_inet_SIOCDARP",
-	  "ioctl$syz_tun_SIOCGIFINDEX",
-
-	  "socket$nl_route",
-	  "sendmsg$nl_route_neigh",
-
-	  "openat$arp_sysctl",
-	  "write$arp_sysctl"
+	  "close"
   ],
   "vm": {
     "count": 2,
