@@ -10,7 +10,7 @@ name: syzkaller fuzzing CI  #nama ini jangan dirubah, ntah kenapa error saat loo
 on:
   workflow_dispatch:
   push:
-    branches: [jin-fuzz-kernel4.6]
+    branches: [jin-fuzz-kernel4.6-netarp]
     paths:
       - ".github/workflows/fuzzing.yml"
       - "myfuzzing/syz/syz-qemu.json"
@@ -85,6 +85,7 @@ jobs:
         env:
           CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }} # di buat denngan: gh secret set ...
           CHAT_ID: "7797309176"
+          RUN_ID: ${{ github.run_id }}
 
         run: |
           curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
@@ -99,9 +100,9 @@ jobs:
           done
 
           if [ -n "$URL" ]; then
-            MSG="[Kernel4.6 - NETALL] Syzkaller UI: $URL"
+            MSG="[$RUN_ID] Syzkaller UI: $URL"
           else
-            MSG="[Kernel4.6 - NETALL] GAGAL Syzkaller publik url"
+            MSG="[$RUN_ID] GAGAL Syzkaller publik url"
           fi
 
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
@@ -119,9 +120,9 @@ jobs:
           done
 
           if [ -n "$URL" ]; then
-            MSG="[Kernel4.6 - NETALL] Listener NC: $URL"
+            MSG="[$RUN_ID] Listener NC: $URL"
           else
-            MSG="[Kernel4.6 - NETALL] GAGAL nc publik url"
+            MSG="[$RUN_ID] GAGAL nc publik url"
           fi
 
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
@@ -151,6 +152,7 @@ jobs:
         env:
           CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: "7797309176"
+          RUN_ID: ${{ github.run_id }}
           DURATION: ${{ inputs.seconds || '60' }}
 
         run: |
@@ -171,9 +173,15 @@ jobs:
               cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
             fi
 
-            timeout -s INT -k 2m 5h \
+            timeout -s INT -k 2m 2m \
               /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
               -config=syz-qemu.json || true
+
+            RES="`ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir | wc -l`"
+            MSG="[$RUN_ID] Done with crash: $RES"
+            curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
+              -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
+
 
 
           } 2>&1 | tee -a ~/mylog.txt
