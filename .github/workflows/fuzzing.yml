@@ -60,18 +60,18 @@ jobs:
           xz -d linux-4.6.tar.xz
           tar xf linux-4.6.tar
 
-          mv linux-4.6 /work
+          sudo mv linux-4.6 /work
 
 
 
       - name: Download kernel-4.6 release
         run: |
           cd /work/linux-4.6
-          wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/bzImage.xz
-          wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/vmlinux.xz
+          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/bzImage.xz
+          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/vmlinux.xz
 
-          xz -d bzImage.xz
-          xz -d vmlinux.xz
+          sudo xz -d bzImage.xz
+          sudo xz -d vmlinux.xz
 
 
 
