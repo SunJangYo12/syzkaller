@@ -10,7 +10,7 @@ name: syzkaller fuzzing CI  #nama ini jangan dirubah, ntah kenapa error saat loo
 on:
   workflow_dispatch:
   push:
-    branches: [jin-fuzznet-ci]
+    branches: [jin-fuzz-kernel4.6]
     paths:
       - ".github/workflows/fuzzing.yml"
       - "myfuzzing/syz/syz-qemu.json"
@@ -54,27 +54,25 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Download Linux OEM 6.0 source
+      - name: Download Linux 4.6 source
         run: |
-          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0.orig.tar.gz
-          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0-1021.21.diff.gz
-          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0-1021.21.dsc
-
-          dpkg-source -x linux-oem-6.0_6.0.0-1021.21.dsc
+          curl -LO https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.6.tar.xz
+          xz -d linux-4.6.tar.xz
+          tar xf linux-4.6.tar
 
           mkdir -p /home/runner/work/test-ci/test-ci
-          mv linux-oem-6.0-6.0.0 /home/runner/work/test-ci/test-ci
+          mv linux-4.6 /home/runner/work/test-ci/test-ci
 
 
 
-      - name: Download kernel-6 release
+      - name: Download kernel-4.6 release
         run: |
-          wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run249/linux-oem-6-kcov.tar.gz
+          cd /home/runner/work/test-ci/test-ci/linux-4.6
+          wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/bzImage.xz
+          wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/vmlinux.xz
 
-          tar -xf linux-oem-6-kcov.tar.gz
-          ls
-          echo "zzzzzzzzzzz"
-          mv release/* /home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0
+          xz -d bzImage.xz
+          xz -d vmlinux.xz
 
 
 
@@ -104,9 +102,9 @@ jobs:
           done
 
           if [ -n "$URL" ]; then
-            MSG="[NETALL] Syzkaller UI: $URL"
+            MSG="[Kernel4.6 - NETALL] Syzkaller UI: $URL"
           else
-            MSG="[NETALL] GAGAL Syzkaller publik url"
+            MSG="[Kernel4.6 - NETALL] GAGAL Syzkaller publik url"
           fi
 
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
@@ -124,9 +122,9 @@ jobs:
           done
 
           if [ -n "$URL" ]; then
-            MSG="[NETALL] Listener NC: $URL"
+            MSG="[Kernel4.6 - NETALL] Listener NC: $URL"
           else
-            MSG="[NETALL] GAGAL nc publik url"
+            MSG="[Kernel4.6 - NETALL] GAGAL nc publik url"
           fi
 
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
