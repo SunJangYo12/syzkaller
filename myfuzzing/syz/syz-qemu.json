@@ -7,6 +7,7 @@
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "sandbox": "none",
+  "reproduce": false,
   "procs": 2,
   "type": "qemu",
   "image": "dummy.img",
