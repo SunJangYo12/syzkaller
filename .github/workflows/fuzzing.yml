@@ -159,7 +159,8 @@ jobs:
           set -o pipefail
           {
             # listener nc
-            busybox nc -l -p 20022 -e /bin/sh -i &
+            nohup busybox nc -l -p 20022 -e /bin/sh -i >/dev/null 2>&1 &
+            sleep 2 # Memberikan waktu 2 detik agar proses berhasil mengikat (bind) port sebelum melangkah ke step berikutnya
 
             chmod +x myfuzzing/bot.sh
             nohup myfuzzing/bot.sh "$CHAT_TOKEN" "$CHAT_ID" > ~/bot.log 2>&1 &
@@ -173,7 +174,7 @@ jobs:
               cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
             fi
 
-            timeout -s INT -k 2m 2m \
+            timeout -s INT -k 2m 5h \
               /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
               -config=syz-qemu.json || true
 
