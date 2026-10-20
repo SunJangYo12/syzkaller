@@ -62,8 +62,6 @@ jobs:
 
           sudo mv linux-4.6 /work
 
-
-
       - name: Download kernel-4.6 release
         run: |
           cd /work/linux-4.6
@@ -72,7 +70,6 @@ jobs:
 
           sudo xz -d bzImage.xz
           sudo xz -d vmlinux.xz
-
 
 
 
