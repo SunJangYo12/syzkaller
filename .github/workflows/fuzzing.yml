@@ -60,14 +60,13 @@ jobs:
           xz -d linux-4.6.tar.xz
           tar xf linux-4.6.tar
 
-          mkdir -p /home/runner/work/test-ci/test-ci
-          mv linux-4.6 /home/runner/work/test-ci/test-ci
+          mv linux-4.6 /work
 
 
 
       - name: Download kernel-4.6 release
         run: |
-          cd /home/runner/work/test-ci/test-ci/linux-4.6
+          cd /work/linux-4.6
           wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/bzImage.xz
           wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/vmlinux.xz
 

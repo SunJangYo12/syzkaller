@@ -3,7 +3,7 @@
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
-  "kernel_obj": "/home/runner/work/test-ci/test-ci/linux-4.6",
+  "kernel_obj": "/work/linux-4.6",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "sandbox": "none",
@@ -29,7 +29,7 @@
   ],
   "vm": {
     "count": 2,
-    "kernel": "/home/runner/work/test-ci/test-ci/linux-4.6/bzImage",
+    "kernel": "/work/linux-4.6/bzImage",
     "initrd": "initramfs-new.cpio.gz",
     "cmdline": "console=ttyS0 root=/dev/ram0 nokaslr",
     "cpu": 2,
