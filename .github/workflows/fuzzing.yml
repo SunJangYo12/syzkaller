@@ -60,6 +60,7 @@ jobs:
           xz -d linux-4.6.tar.xz
           tar xf linux-4.6.tar
 
+          sudo mkdir -p /work
           sudo mv linux-4.6 /work
 
       - name: Download kernel-4.6 release
