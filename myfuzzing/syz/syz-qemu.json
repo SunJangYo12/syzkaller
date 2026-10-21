@@ -22,7 +22,7 @@
     "connect$inet",
     "close"
   ],
-  "focus_areas": [
+  "cover_filter": [
     {
       "name": "icmp",
       "filter": {
