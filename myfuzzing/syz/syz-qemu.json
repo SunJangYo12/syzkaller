@@ -1,5 +1,5 @@
 {
-  "name": "Kernel 4.6 - ramdisk",
+  "name": "Kernel 4.6 NetARP - ramdisk",
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
