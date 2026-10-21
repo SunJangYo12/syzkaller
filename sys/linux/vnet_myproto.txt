@@ -12,6 +12,208 @@ myproto_packet {
 syz_emit_ethernet$myproto(len len[packet], packet ptr[in, myproto_packet])
 
 
+
+
+############################ ICMP profile ############################
+# local  = 172.20.20.170 (0xac1414aa), MAC aa:aa:aa:aa:aa:aa
+# remote = 172.20.20.187 (0xac1414bb), MAC aa:aa:aa:aa:aa:bb
+
+# Arm ganda dipakai sebagai bobot (syzlang tidak punya bobot).
+icmp_dst_mac [
+	local		mac_addr_t[const[0xaa, int8]]
+	local2		mac_addr_t[const[0xaa, int8]]
+	broadcast	array[const[0xff, int8], 6]
+]
+
+icmp_dst_ip [
+	local		const[0xac1414aa, int32be]
+	local2		const[0xac1414aa, int32be]
+	broadcast	const[0xffffffff, int32be]
+	multicast1	const[0xe0000001, int32be]
+] [size[4]]
+
+icmp_src_ip [
+	remote		const[0xac1414bb, int32be]
+	remote2		const[0xac1414bb, int32be]
+	peer1		const[0xac141401, int32be]
+	peer2		const[0xac141402, int32be]
+] [size[4]]
+
+# Header IP luar: frag HARUS 0, kalau tidak paket masuk ip_defrag dan tidak sampai icmp_rcv.
+icmp_ip_header {
+	ver_ihl		const[0x45, int8]
+	tos		int8
+	total_len	len[icmp_ip_packet, int16be]
+	id		int16be
+	frag		const[0, int16be]
+	ttl		int8
+	proto		const[1, int8]
+	csum		csum[parent, inet, int16be]
+	saddr		icmp_src_ip
+	daddr		icmp_dst_ip
+} [packed]
+
+# Header IP yang dulu dikirim host: src=local, dst=remote
+type icmp_inner_ip[PROTO] {
+	ver_ihl		const[0x45, int8]
+	tos		int8
+	total_len	int16be
+	id		int16be
+	frag		const[0, int16be]
+	ttl		int8
+	proto		const[PROTO, int8]
+	csum		csum[parent, inet, int16be]
+	saddr		const[0xac1414aa, int32be]
+	daddr		const[0xac1414bb, int32be]
+} [packed]
+
+# 8 byte pertama TCP/UDP: sport, dport, lalu seq (TCP) atau len+csum (UDP)
+icmp_inner_l4 {
+	sport	sock_port
+	dport	sock_port
+	seq	tcp_seq_num
+} [packed]
+
+# 8 byte pertama ICMP: type, code, csum, id, seq
+icmp_inner_icmp_l4 {
+	type	int8[0:18]
+	code	int8
+	csum	int16be
+	id	int16be
+	seq	int16be
+} [packed]
+
+icmp_inner_tcp {
+	ip	icmp_inner_ip[6]
+	l4	icmp_inner_l4
+} [packed]
+
+icmp_inner_udp {
+	ip	icmp_inner_ip[17]
+	l4	icmp_inner_l4
+} [packed]
+
+icmp_inner_icmp {
+	ip	icmp_inner_ip[1]
+	l4	icmp_inner_icmp_l4
+} [packed]
+
+icmp_inner [
+	tcp	icmp_inner_tcp
+	udp	icmp_inner_udp
+	icmp	icmp_inner_icmp
+] [varlen]
+
+icmp_dest_unreach {
+	type	const[3, int8]
+	code	int8[0:15]
+	csum	csum[parent, inet, int16be]
+	unused	int8
+	length	int8
+	mtu	int16be
+	inner	icmp_inner
+} [packed]
+
+icmp_source_quench {
+	type	const[4, int8]
+	code	const[0, int8]
+	csum	csum[parent, inet, int16be]
+	unused	int32be
+	inner	icmp_inner
+} [packed]
+
+icmp_redirect {
+	type	const[5, int8]
+	code	int8[0:3]
+	csum	csum[parent, inet, int16be]
+	gateway	ipv4_addr
+	inner	icmp_inner
+} [packed]
+
+icmp_time_exceeded {
+	type	const[11, int8]
+	code	int8[0:1]
+	csum	csum[parent, inet, int16be]
+	unused	int32be
+	inner	icmp_inner
+} [packed]
+
+icmp_param_prob {
+	type	const[12, int8]
+	code	const[0, int8]
+	csum	csum[parent, inet, int16be]
+	pointer	int8
+	unused1	int8
+	unused2	int16be
+	inner	icmp_inner
+} [packed]
+
+icmp_echo {
+	type	int8[0:18]
+	code	int8
+	csum	csum[parent, inet, int16be]
+	id	int16be
+	seq	int16be
+	data	array[int8, 0:64]
+} [packed]
+
+icmp_message [
+	echo		icmp_echo
+	unreach		icmp_dest_unreach
+	quench		icmp_source_quench
+	redirect	icmp_redirect
+	timeexc		icmp_time_exceeded
+	paramprob	icmp_param_prob
+] [varlen]
+
+icmp_ip_packet {
+	hdr	icmp_ip_header
+	msg	icmp_message
+} [packed]
+
+icmp_eth_packet {
+	dst_mac	icmp_dst_mac
+	src_mac	mac_addr_t[const[0xbb, int8]]
+	etype	const[0x0800, int16be]
+	ip	icmp_ip_packet
+} [packed]
+
+syz_emit_ethernet$icmp(len len[packet], packet ptr[in, icmp_eth_packet], frags ptr[in, vnet_fragmentation, opt])
+
+# seq di paket harus ISN (atau ISN+1) dari SYN yang dikirim kernel
+syz_extract_tcp_res$icmp(res ptr[out, tcp_resources], seq_inc int32[0:1], ack_inc const[0])
+
+##### pendamping: socket dengan 4-tuple yang cocok ##############
+
+icmp_bind_ip [
+	empty	const[0x0, int32be]
+	local	const[0xac1414aa, int32be]
+] [size[4]]
+
+sockaddr_in_syz_local {
+	family	const[AF_INET, int16]
+	port	sock_port
+	addr	icmp_bind_ip
+} [size[16]]
+
+sockaddr_in_syz_remote {
+	family	const[AF_INET, int16]
+	port	sock_port
+	addr	const[0xac1414bb, int32be]
+} [size[16]]
+
+bind$inet_syz_local(fd sock_in, addr ptr[in, sockaddr_in_syz_local], addrlen len[addr])
+connect$inet_syz_remote(fd sock_in, addr ptr[in, sockaddr_in_syz_remote], addrlen len[addr])
+
+
+
+
+
+
+
+
+
+
 ################################ ARP ################################
 
 arp_dst_mac [

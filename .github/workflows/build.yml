@@ -139,11 +139,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v.1.0.5"
+          TAG="v.1.0.6"
           gh release create "$TAG" \
             result.tar.gz \
             --target "${{ github.sha }}" \
             --title "$TAG" \
-            --notes "Focuse to arp packet, fix focus neigh mutation" \
+            --notes "Focus to icmp packet" \
             --prerelease
 
