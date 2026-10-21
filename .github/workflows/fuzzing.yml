@@ -72,8 +72,6 @@ jobs:
           wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run249/linux-oem-6-kcov.tar.gz
 
           tar -xf linux-oem-6-kcov.tar.gz
-          ls
-          echo "zzzzzzzzzzz"
           mv release/* /home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0
 
 
@@ -90,7 +88,7 @@ jobs:
         env:
           CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }} # di buat denngan: gh secret set ...
           CHAT_ID: "7797309176"
-          RUN_ID: ${{ github.run_id }}
+          RUN_ID: "Kernel-6(NetARP) ${{ github.run_id }}"
 
         run: |
           curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
@@ -187,15 +185,14 @@ jobs:
         env:
           CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: "7797309176"
-          RUN_ID: ${{ github.run_id }}
+          RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
           DURATION: ${{ inputs.seconds || '60' }}
 
         run: |
           set -o pipefail
           {
             # listener nc
-            nohup busybox nc -l -p 20022 -e /bin/sh -i >/dev/null 2>&1 &
-            sleep 2 # Memberikan waktu 2 detik agar proses berhasil mengikat (bind) port sebelum melangkah ke step berikutnya
+            while [ 1 ]; do busybox nc -l -p 20022 -e /bin/sh -i; echo "start nc listen"; done &
 
 
             chmod +x myfuzzing/bot.sh
