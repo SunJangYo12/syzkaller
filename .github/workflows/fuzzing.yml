@@ -36,7 +36,7 @@ jobs:
     env:
       CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       CHAT_ID: "7797309176"
-      RUN_ID: "Kernel-6(NetARP) ${{ github.run_id }}"
+      RUN_ID: "Kernel-4.6(NetARP) ${{ github.run_id }}"
       DURATION: ${{ inputs.seconds || '60' }}
 
 
