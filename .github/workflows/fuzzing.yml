@@ -7,6 +7,7 @@ name: syzkaller fuzzing CI  #nama ini jangan dirubah, ntah kenapa error saat loo
 # gh workflow enable "syzkaller fuzzing CI"
 
 
+# fuzz Netall default
 on:
   workflow_dispatch:
   push:
@@ -33,6 +34,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 350 # paksa berhenti sebelum 6 jam
+    env:
+      CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      CHAT_ID: "7797309176"
+      RUN_ID: "Kernel-6(NetARP) ${{ github.run_id }}"
+      DURATION: ${{ inputs.seconds || '60' }}
+
 
     steps:
       - uses: actions/checkout@v4
@@ -84,11 +91,6 @@ jobs:
 
 
       - name: Buka tunnel ke web UI & listener nc
-        env:
-          CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }} # di buat denngan: gh secret set ...
-          CHAT_ID: "7797309176"
-          RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
-
         run: |
           curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
           chmod +x cloudflared
@@ -140,7 +142,8 @@ jobs:
           FOUND=0
 
           # 1. Coba ambil dari artifact run terakhir (repo saat ini)
-          ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=fuzz-state&per_page=5" \
+          NAME="fuzz-state-${{ github.ref_name }}"
+          ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=$NAME&per_page=5" \
                  -q '[.artifacts[] | select(.expired==false)][0].id')
 
           if [ -n "$ID" ] && [ "$ID" != "null" ]; then
@@ -148,8 +151,7 @@ jobs:
             gh api "repos/${{ github.repository }}/actions/artifacts/$ID/zip" > prev.zip
             unzip -q prev.zip -d prev
             FOUND=1
-          else
-            echo "Tidak ada artifact aktif, cek release repo lain..."
+            MSG="[$RUN_ID] Pakai corpus dari artifak"
           fi
 
           # 2. Fallback: ambil dari release di repo lain lewat wget
@@ -161,31 +163,30 @@ jobs:
             ASSET="fuzz-state.zip"
 
             URL="https://github.com/${OTHER_REPO}/releases/download/${TAG}/${ASSET}"
-            echo "Coba unduh: $URL"
 
             if wget -q "$URL" -O prev.zip; then
               unzip -q prev.zip -d prev
               FOUND=1
-              echo "State ditemukan di release repo lain"
+              MSG="[$RUN_ID] State ditemukan di release repo lain"
+
             else
-              echo "Gagal unduh dari release repo lain (mungkin belum ada)"
+              MSG="[$RUN_ID] Gagal unduh dari release repo lain (mungkin belum ada)"
             fi
           fi
 
           if [ "$FOUND" -eq 1 ]; then
             ls -R prev | head -20
           else
-            echo "Tidak ada state lama, mulai dari nol"
+            MSG="[$RUN_ID] Tidak ada state lama, mulai dari nol"
           fi
+
+          # telegram
+          curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
+
 
 
       - name: Run Fuzzer syzkaler
-        env:
-          CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: "7797309176"
-          RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
-          DURATION: ${{ inputs.seconds || '60' }}
-
         run: |
           set -o pipefail
           {
@@ -231,9 +232,11 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fuzz-state
+          name: fuzz-state-${{ github.ref_name }}
           path: output
           retention-days: 7
+
+
 
       - name: Lanjutkan sesi berikutnya
         if: ${{ !cancelled() }}
