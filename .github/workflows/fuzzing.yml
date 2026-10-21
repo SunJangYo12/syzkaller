@@ -33,14 +33,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 350 # paksa berhenti sebelum 6 jam
+    env:
+      CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      CHAT_ID: "7797309176"
+      RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
+      DURATION: ${{ inputs.seconds || '60' }}
 
     steps:
-      env:
-        CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        CHAT_ID: "7797309176"
-        RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
-        DURATION: ${{ inputs.seconds || '60' }}
-
       - uses: actions/checkout@v4
 
       - name: Install dependencies
