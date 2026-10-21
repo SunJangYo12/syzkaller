@@ -10,7 +10,7 @@ name: syzkaller fuzzing CI  #nama ini jangan dirubah, ntah kenapa error saat loo
 on:
   workflow_dispatch:
   push:
-    branches: [jin-fuzz-kernel4.6-netarp]
+    branches: [jin-fuzz-kernel4.6-neticmp]
     paths:
       - ".github/workflows/fuzzing.yml"
       - "myfuzzing/syz/syz-qemu.json"
@@ -36,7 +36,7 @@ jobs:
     env:
       CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       CHAT_ID: "7797309176"
-      RUN_ID: "Kernel-4.6(NetARP) ${{ github.run_id }}"
+      RUN_ID: "Kernel-4.6(NetICMP) ${{ github.run_id }}"
       DURATION: ${{ inputs.seconds || '60' }}
 
 
@@ -83,7 +83,7 @@ jobs:
 
       - name: Download syzkaller release binary
         run: |
-          wget https://github.com/SunJangYo12/syzkaller/releases/download/v.1.0.5/result.tar.gz
+          wget https://github.com/SunJangYo12/syzkaller/releases/download/v.1.0.6/result.tar.gz
 
           tar -xf result.tar.gz
 

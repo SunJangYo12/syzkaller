@@ -1,5 +1,5 @@
 {
-  "name": "Kernel 4.6 NetARP - ramdisk",
+  "name": "Kernel 4.6 NetICMP - ramdisk",
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
@@ -12,23 +12,15 @@
   "type": "qemu",
   "image": "dummy.img",
   "enable_syscalls": [
-      "syz_emit_ethernet$arp",
+	  "syz_emit_ethernet$icmp",
+	  "syz_extract_tcp_res$icmp",
 
 	  "socket$inet_udp",
-	  "bind$inet",
-	  "connect$inet",
-	  "sendto$inet_syz_tun",
-	  "close",
-
-	  "ioctl$sock_inet_SIOCSARP",
-	  "ioctl$sock_inet_SIOCDARP",
-	  "ioctl$syz_tun_SIOCGIFINDEX",
-
-	  "socket$nl_route",
-	  "sendmsg$nl_route_neigh",
-
-	  "openat$arp_sysctl",
-	  "write$arp_sysctl"
+	  "socket$inet_tcp",
+	  "socket$inet_icmp_raw",
+	  "bind$inet_syz_local",
+	  "connect$inet_syz_remote",
+	  "close"
   ],
   "vm": {
     "count": 2,
