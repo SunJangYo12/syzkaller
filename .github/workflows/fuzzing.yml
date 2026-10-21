@@ -205,14 +205,14 @@ jobs:
               cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
             fi
 
-            timeout -s INT -k 2m 5h \
+            timeout -s INT -k 2m 2m \
               /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
               -config=syz-qemu.json || true
 
-            RES=$(ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir/crashes 2>/dev/null | wc -l || echo 0)
+            RES=$(ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir/crashes 2>/dev/null | wc -l || true)
             MSG="[$RUN_ID] Done with crash: $RES"
             curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
-              -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
+              -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null || true
 
 
           } 2>&1 | tee -a ~/mylog.txt
