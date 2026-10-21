@@ -72,10 +72,7 @@ jobs:
           wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run249/linux-oem-6-kcov.tar.gz
 
           tar -xf linux-oem-6-kcov.tar.gz
-          ls
-          echo "zzzzzzzzzzz"
           mv release/* /home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0
-
 
 
 
@@ -90,7 +87,7 @@ jobs:
         env:
           CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }} # di buat denngan: gh secret set ...
           CHAT_ID: "7797309176"
-          RUN_ID: ${{ github.run_id }}
+          RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
 
         run: |
           curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
@@ -105,9 +102,9 @@ jobs:
           done
 
           if [ -n "$URL" ]; then
-            MSG="[$RUN_ID] NetAll Syzkaller UI: $URL"
+            MSG="[$RUN_ID] Syzkaller UI: $URL"
           else
-            MSG="[$RUN_ID] NetAll Syzkaller publik url"
+            MSG="[$RUN_ID] Syzkaller publik url"
           fi
 
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
@@ -125,9 +122,9 @@ jobs:
           done
 
           if [ -n "$URL" ]; then
-            MSG="[$RUN_ID] NetAll Listener NC: $URL"
+            MSG="[$RUN_ID] Listener NC: $URL"
           else
-            MSG="[$RUN_ID] NetAll GAGAL nc publik url"
+            MSG="[$RUN_ID] nc publik url"
           fi
 
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
@@ -186,7 +183,7 @@ jobs:
         env:
           CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: "7797309176"
-          RUN_ID: ${{ github.run_id }}
+          RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
           DURATION: ${{ inputs.seconds || '60' }}
 
         run: |
