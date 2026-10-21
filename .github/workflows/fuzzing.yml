@@ -36,7 +36,7 @@ jobs:
     env:
       CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       CHAT_ID: "7797309176"
-      RUN_ID: "Kernel-6(NetAll) ${{ github.run_id }}"
+      RUN_ID: "Kernel-6(NetARP) ${{ github.run_id }}"
       DURATION: ${{ inputs.seconds || '60' }}
 
     steps:
@@ -150,8 +150,7 @@ jobs:
             gh api "repos/${{ github.repository }}/actions/artifacts/$ID/zip" > prev.zip
             unzip -q prev.zip -d prev
             FOUND=1
-          else
-            echo "Tidak ada artifact aktif, cek release repo lain..."
+            MSG="[$RUN_ID] Pakai corpus dari artifak"
           fi
 
           # 2. Fallback: ambil dari release di repo lain lewat wget
@@ -163,26 +162,26 @@ jobs:
             ASSET="fuzz-state.zip"
 
             URL="https://github.com/${OTHER_REPO}/releases/download/${TAG}/${ASSET}"
-            echo "Coba unduh: $URL"
 
             if wget -q "$URL" -O prev.zip; then
               unzip -q prev.zip -d prev
               FOUND=1
-              echo "State ditemukan di release repo lain"
+              MSG="[$RUN_ID] State ditemukan di release repo lain"
 
-              MSG="[$RUN_ID] Using corpus from release"
-              curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
-                -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
             else
-              echo "Gagal unduh dari release repo lain (mungkin belum ada)"
+              MSG="[$RUN_ID] Gagal unduh dari release repo lain (mungkin belum ada)"
             fi
           fi
 
           if [ "$FOUND" -eq 1 ]; then
             ls -R prev | head -20
           else
-            echo "Tidak ada state lama, mulai dari nol"
+            MSG="[$RUN_ID] Tidak ada state lama, mulai dari nol"
           fi
+
+          # telegram
+          curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
 
 
       - name: Run Fuzzer syzkaler
