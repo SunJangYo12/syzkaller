@@ -158,6 +158,7 @@ jobs:
 
           # 2. Fallback: ambil dari release di repo lain lewat wget
           # gh release create "fuzz-state" fuzz-state.zip --title "x" --notes "x" --prerelease
+          # gh release delete "fuzz-state" --yes
           if [ "$FOUND" -eq 0 ]; then
             OTHER_REPO="sunjangyo12/test-ci"
             TAG="fuzz-state"
