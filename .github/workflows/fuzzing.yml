@@ -142,7 +142,8 @@ jobs:
           FOUND=0
 
           # 1. Coba ambil dari artifact run terakhir (repo saat ini)
-          ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=fuzz-state&per_page=5" \
+          NAME="fuzz-state-${{ github.ref_name }}"
+          ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=$NAME&per_page=5" \
                  -q '[.artifacts[] | select(.expired==false)][0].id')
 
           if [ -n "$ID" ] && [ "$ID" != "null" ]; then
@@ -232,9 +233,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fuzz-state
+          name: fuzz-state-${{ github.ref_name }}
           path: output
           retention-days: 7
+
 
       - name: Lanjutkan sesi berikutnya
         if: ${{ !cancelled() }}
