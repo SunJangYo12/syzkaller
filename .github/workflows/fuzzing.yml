@@ -189,49 +189,39 @@ jobs:
 
 
       - name: Run Fuzzer syzkaler
-        env:
-          CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: "7797309176"
-          RUN_ID: ${{ github.run_id }}
-          DURATION: ${{ inputs.seconds || '60' }}
-
         run: |
-          set -o pipefail
-          {
-            # listener nc
-            while [ 1 ]; do busybox nc -l -p 20022 -e /bin/sh -i; echo "start nc listen"; done &
-            PID_NC=$!
+          # listener nc
+          while [ 1 ]; do busybox nc -l -p 20022 -e /bin/sh -i; echo "start nc listen"; done &
+          PID_NC=$!
 
-            chmod +x myfuzzing/bot.sh
-            nohup myfuzzing/bot.sh "$CHAT_TOKEN" "$CHAT_ID" > ~/bot.log 2>&1 &
-            PID_BOT=$!
+          chmod +x myfuzzing/bot.sh
+          nohup myfuzzing/bot.sh "$CHAT_TOKEN" "$CHAT_ID" > ~/bot.log 2>&1 &
+          PID_BOT=$!
 
 
-            cd myfuzzing/syz
-            chmod 0600 ssh/mykey
-            mkdir -p workdir
+          cd myfuzzing/syz
+          chmod 0600 ssh/mykey
+          mkdir -p workdir
 
-            # lanjutkan corpus dari sesi sebelumnya
-            if [ -d "$GITHUB_WORKSPACE/prev/workdir" ]; then
-              cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
-            fi
+          # lanjutkan corpus dari sesi sebelumnya
+          if [ -d "$GITHUB_WORKSPACE/prev/workdir" ]; then
+            cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
+          fi
 
-            timeout -s INT -k 2m 5h \
-              /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
-              -config=syz-qemu.json || true
+          timeout -s INT -k 2m 5m \
+            /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
+            -config=syz-qemu.json || true
 
-            RES=$(ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir/crashes 2>/dev/null | wc -l || echo 0)
-            MSG="[$RUN_ID] Done with crash: $RES"
-            curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
-              -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
+          RES=$(ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir/crashes 2>/dev/null | wc -l || echo 0)
+          MSG="[$RUN_ID] Done with crash: $RES"
+          curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
 
 
-            # bersihkan semua proses latar belakang
-            kill $PID_NC $PID_BOT 2>/dev/null || true
-            pkill -f myfuzzing/bot.sh 2>/dev/null || true
-            pkill qemu-system 2>/dev/null || true
-
-          } 2>&1 | tee -a ~/mylog.txt
+          # bersihkan semua proses latar belakang
+          kill $PID_NC $PID_BOT 2>/dev/null || true
+          pkill -f myfuzzing/bot.sh 2>/dev/null || true
+          pkill qemu-system 2>/dev/null || true
 
 
       - name: Collect artifacts
