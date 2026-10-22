@@ -133,6 +133,7 @@ jobs:
 
 
 
+
       - name: Ambil state sesi sebelumnya
         continue-on-error: true
         env:
@@ -142,7 +143,8 @@ jobs:
           FOUND=0
 
           # 1. Coba ambil dari artifact run terakhir (repo saat ini)
-          ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=fuzz-state&per_page=5" \
+          NAME="fuzz-state-${{ github.ref_name }}"
+          ID=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=$NAME&per_page=5" \
                  -q '[.artifacts[] | select(.expired==false)][0].id')
 
           if [ -n "$ID" ] && [ "$ID" != "null" ]; then
@@ -150,7 +152,7 @@ jobs:
             gh api "repos/${{ github.repository }}/actions/artifacts/$ID/zip" > prev.zip
             unzip -q prev.zip -d prev
             FOUND=1
-            MSG="[$RUN_ID] Pakai corpus dari artifak"
+            MSG="[$RUN_ID] Pakai corpus dari artifact: $NAME"
           fi
 
           # 2. Fallback: ambil dari release di repo lain lewat wget
@@ -187,6 +189,7 @@ jobs:
 
 
 
+
       - name: Run Fuzzer syzkaler
         env:
           CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -199,9 +202,13 @@ jobs:
           {
             # listener nc
             while [ 1 ]; do busybox nc -l -p 20022 -e /bin/sh -i; echo "start nc listen"; done &
+            PID_NC=$!
+
 
             chmod +x myfuzzing/bot.sh
             nohup myfuzzing/bot.sh "$CHAT_TOKEN" "$CHAT_ID" > ~/bot.log 2>&1 &
+            PID_BOT=$!
+
 
             cd myfuzzing/syz
             chmod 0600 ssh/mykey
@@ -222,6 +229,11 @@ jobs:
               -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
 
 
+            # bersihkan semua proses latar belakang
+            kill $PID_NC $PID_BOT 2>/dev/null || true
+            pkill -f myfuzzing/bot.sh 2>/dev/null || true
+            pkill qemu-system 2>/dev/null || true
+
 
           } 2>&1 | tee -a ~/mylog.txt
 
@@ -240,7 +252,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fuzz-state
+          name: fuzz-state-${{ github.ref_name }}
           path: output
           retention-days: 7
 
