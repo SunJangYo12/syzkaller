@@ -75,10 +75,7 @@ jobs:
           cd /work/linux-4.6.7
           sudo wget https://github.com/SunJangYo12/test-ci/releases/download/v4.6.7/bzImage
           sudo wget https://github.com/SunJangYo12/test-ci/releases/download/v4.6.7/vmlinux.xz
-
           sudo xz -d vmlinux.xz
-
-
 
       - name: Download syzkaller release binary
         run: |
