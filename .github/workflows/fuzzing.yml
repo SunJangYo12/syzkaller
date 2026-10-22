@@ -201,9 +201,9 @@ jobs:
           mkdir -p workdir
 
           # lanjutkan corpus dari sesi sebelumnya
-          if [ -d "$GITHUB_WORKSPACE/prev/workdir" ]; then
-            cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
-          fi
+          #if [ -d "$GITHUB_WORKSPACE/prev/workdir" ]; then
+          #  cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
+          #fi
 
           timeout -s INT -k 2m 5h \
             /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
