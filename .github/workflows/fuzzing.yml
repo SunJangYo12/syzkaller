@@ -62,27 +62,27 @@ jobs:
 
       - name: Download Linux 4.6 source
         run: |
-          curl -LO https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.6.tar.xz
-          xz -d linux-4.6.tar.xz
-          tar xf linux-4.6.tar
+          curl -LO https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.6.7.tar.xz
+
+          xz -d linux-4.6.7.tar.xz
+          tar xf linux-4.6.7.tar
 
           sudo mkdir -p /work
-          sudo mv linux-4.6 /work
+          sudo mv linux-4.6.7 /work
 
-      - name: Download kernel-4.6 release
+      - name: Download kernel-4.6.7 release
         run: |
-          cd /work/linux-4.6
-          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/bzImage.xz
-          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/build-271/vmlinux.xz
+          cd /work/linux-4.6.7
+          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/v4.6.7/bzImage
+          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/v4.6.7/vmlinux.xz
 
-          sudo xz -d bzImage.xz
           sudo xz -d vmlinux.xz
 
 
 
       - name: Download syzkaller release binary
         run: |
-          wget https://github.com/SunJangYo12/syzkaller/releases/download/v.1.0.4/result.tar.gz
+          wget https://github.com/SunJangYo12/syzkaller/releases/download/v.1.0.6/result.tar.gz
 
           tar -xf result.tar.gz
 

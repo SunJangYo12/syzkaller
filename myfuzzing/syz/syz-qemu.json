@@ -1,9 +1,9 @@
 {
-  "name": "Kernel 4.6 netall - ramdisk",
+  "name": "Kernel 4.6.7 netall - ramdisk",
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
-  "kernel_obj": "/work/linux-4.6",
+  "kernel_obj": "/work/linux-4.6.7",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "sandbox": "none",
@@ -30,7 +30,7 @@
   ],
   "vm": {
     "count": 2,
-    "kernel": "/work/linux-4.6/bzImage",
+    "kernel": "/work/linux-4.6.7/bzImage",
     "initrd": "initramfs-new.cpio.gz",
     "cmdline": "console=ttyS0 root=/dev/ram0 nokaslr",
     "cpu": 2,
