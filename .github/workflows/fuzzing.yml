@@ -197,7 +197,7 @@ jobs:
           chmod 0600 ssh/mykey
           mkdir -p workdir
 
-          # lanjutkan corpus dari sesi sebelumnya
+          # lanjutkan corpus dari sesi sebelumnya zzzzzzzz
           if [ -d "$GITHUB_WORKSPACE/prev/workdir" ]; then
             cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
           fi
