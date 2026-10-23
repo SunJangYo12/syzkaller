@@ -202,11 +202,9 @@ jobs:
           #  cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
           #fi
 
-          timeout -s INT -k 2m 10m \
+          timeout -s INT -k 2m 5h \
             /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
-            -config=syz-qemu.json
-
-          cxzzzzzzz
+            -config=syz-qemu.json || true
 
           RES=$(ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir/crashes 2>/dev/null | wc -l || echo 0)
           MSG="[$RUN_ID] Done with crash: $RES"
