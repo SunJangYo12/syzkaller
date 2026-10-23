@@ -206,6 +206,8 @@ jobs:
             /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
             -config=syz-qemu.json
 
+          cxzzzzzzz
+
           RES=$(ls /home/runner/work/syzkaller/syzkaller/myfuzzing/syz/workdir/crashes 2>/dev/null | wc -l || echo 0)
           MSG="[$RUN_ID] Done with crash: $RES"
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
