@@ -202,7 +202,7 @@ jobs:
           #  cp -a "$GITHUB_WORKSPACE/prev/workdir/." workdir/
           #fi
 
-          timeout -s INT -k 2m 2m \
+          timeout -s INT -k 2m 10m \
             /home/runner/work/syzkaller/syzkaller/bin/syz-manager \
             -config=syz-qemu.json
 
