@@ -4,7 +4,7 @@ name: syzkaller fuzzing CI  #nama ini jangan dirubah, ntah kenapa error saat loo
 # gh run cancel 38494535088 --force
 # START:
 # gh workflow list --all        # lihat status: active / disabled_manually
-# gh workflow enable "syzkaller fuzzing CI"
+# gh workflow enable "syzkaller fuzzing CI" zzzzzzzzzzz
 
 
 on:
