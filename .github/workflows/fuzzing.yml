@@ -64,20 +64,20 @@ jobs:
       - name: Download Linux-5.1.0 source
         run: |
           curl -L -o linux.tar.gz https://github.com/torvalds/linux/archive/459e3a21535ae3c7a9a123650e54f5c882b8fcbf.tar.gz
-          mkdir linux-5.1.0
-          tar xzf linux.tar.gz -C linux-5.1.0 --strip-components=1
+          mkdir linux
+          tar xzf linux.tar.gz -C linux --strip-components=1
 
-          mkdir -p /home/runner/work/test-ci/test-ci
-          mv linux-5.1.0 /home/runner/work/test-ci/test-ci
+          sudo mkdir -p /work
+          sudo mv linux /work
 
 
 
       - name: Download kernel-5.1.0 release
         run: |
-          cd /home/runner/work/test-ci/test-ci/linux-5.1.0
-          wget https://github.com/SunJangYo12/test-ci/releases/download/v5.1.0-rc7/bzImage
-          wget https://github.com/SunJangYo12/test-ci/releases/download/v5.1.0-rc7/vmlinux.xz
-          xz -d vmlinux.xz
+          cd /work/linux
+          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/v5.1.0-rc7/bzImage
+          sudo wget https://github.com/SunJangYo12/test-ci/releases/download/v5.1.0-rc7/vmlinux.xz
+          sudo xz -d vmlinux.xz
 
 
       - name: Download syzkaller release binary
