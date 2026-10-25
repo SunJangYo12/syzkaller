@@ -12,36 +12,22 @@
   "type": "qemu",
   "image": "dummy.img",
   "enable_syscalls": [
-    "syz_emit_ethernet$icmp",
-    "syz_extract_tcp_res",
+      "syz_emit_ethernet",
+      "syz_extract_tcp_res",
+      "syz_extract_tcp_res$synack",
 
-    "socket$inet_udp",
-    "socket$inet_tcp",
-    "socket$inet_icmp_raw",
-    "bind$inet",
-    "connect$inet",
-    "close"
+      "socket$inet_tcp",
+      "bind$inet",
+      "listen",
+      "accept$inet",
+
+      "socket$inet6_tcp",
+      "bind$inet6",
+      "accept$inet6",
+
+      "socket$inet_udp",
+      "close"
   ],
-  "experimental": {
-    "focus_areas": [
-      {
-        "name": "icmp",
-        "filter": {
-			"files": [
-				"^net/ipv4/icmp\\.c$",
-				"^net/ipv4/raw\\.c$",
-				"^net/ipv4/udp\\.c$",
-				"^net/ipv4/tcp_ipv4\\.c$",
-				"^net/ipv4/route\\.c$"
-			]
-		},
-        "weight": 3.0
-      },
-      {
-		"name": "rest", "weight": 1.0
-	  }
-    ]
-  },
   "vm": {
     "count": 2,
     "kernel": "/home/runner/work/test-ci/test-ci/linux-5.1.0/bzImage",
