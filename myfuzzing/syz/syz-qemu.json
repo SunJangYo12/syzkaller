@@ -1,9 +1,9 @@
 {
-  "name": "Kernel 6 neticmp - ramdisk",
+  "name": "Kernel 5.1.0 all(eistables) - ramdisk",
   "target": "linux/amd64",
   "http": ":56741",
   "workdir": "workdir",
-  "kernel_obj": "/home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0",
+  "kernel_obj": "/home/runner/work/test-ci/test-ci/linux-5.1.0",
   "syzkaller": "/home/runner/work/syzkaller/syzkaller",
   "sshkey": "ssh/mykey",
   "sandbox": "none",
@@ -44,7 +44,7 @@
   },
   "vm": {
     "count": 2,
-    "kernel": "/home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0/bzImage",
+    "kernel": "/home/runner/work/test-ci/test-ci/linux-5.1.0/bzImage",
     "initrd": "initramfs-new.cpio.gz",
     "cmdline": "console=ttyS0 root=/dev/ram0 nokaslr",
     "cpu": 2,

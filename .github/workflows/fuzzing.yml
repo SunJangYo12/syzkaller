@@ -11,7 +11,7 @@ name: syzkaller fuzzing CI  #nama ini jangan dirubah, ntah kenapa error saat loo
 on:
   workflow_dispatch:
   push:
-    branches: [jin-fuzz-kernel6.0-neticmp]
+    branches: [jin-fuzz-kernel5.1.0]
     paths:
       - ".github/workflows/fuzzing.yml"
       - "myfuzzing/syz/syz-qemu.json"
@@ -37,7 +37,7 @@ jobs:
     env:
       CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       CHAT_ID: "7797309176"
-      RUN_ID: "Kernel-6-NetICMP ${{ github.run_id }}"
+      RUN_ID: "Kernel-5.1.0-NetAll ${{ github.run_id }}"
       DURATION: ${{ inputs.seconds || '60' }}
 
 
@@ -61,26 +61,23 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Download Linux OEM 6.0 source
+      - name: Download Linux-5.1.0 source
         run: |
-          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0.orig.tar.gz
-          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0-1021.21.diff.gz
-          wget https://security.ubuntu.com/ubuntu/ubuntu/pool/main/l/linux-oem-6.0/linux-oem-6.0_6.0.0-1021.21.dsc
-
-          dpkg-source -x linux-oem-6.0_6.0.0-1021.21.dsc
+          curl -L -o linux.tar.gz https://github.com/torvalds/linux/archive/459e3a21535ae3c7a9a123650e54f5c882b8fcbf.tar.gz
+          mkdir linux-5.1.0
+          tar xzf linux.tar.gz -C linux-5.1.0 --strip-components=1
 
           mkdir -p /home/runner/work/test-ci/test-ci
-          mv linux-oem-6.0-6.0.0 /home/runner/work/test-ci/test-ci
+          mv linux-5.1.0 /home/runner/work/test-ci/test-ci
 
 
 
-      - name: Download kernel-6 release
+      - name: Download kernel-5.1.0 release
         run: |
-          wget https://github.com/SunJangYo12/test-ci/releases/download/kcov-6.0.9-run249/linux-oem-6-kcov.tar.gz
-
-          tar -xf linux-oem-6-kcov.tar.gz
-          mv release/* /home/runner/work/test-ci/test-ci/linux-oem-6.0-6.0.0
-
+          cd /home/runner/work/test-ci/test-ci/linux-5.1.0
+          wget https://github.com/SunJangYo12/test-ci/releases/download/v5.1.0-rc7/bzImage
+          wget https://github.com/SunJangYo12/test-ci/releases/download/v5.1.0-rc7/vmlinux.xz
+          xz -d vmlinux.xz
 
 
       - name: Download syzkaller release binary
